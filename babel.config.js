@@ -7,9 +7,9 @@ module.exports = function (api) {
       isJest
         ? ['@babel/preset-env', { targets: { node: 'current' } }]
         : ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
-      '@babel/preset-react',
+      isJest && '@babel/preset-react',
       '@babel/preset-typescript',
-    ],
+    ].filter(Boolean),
     plugins: [
       !isJest && 'react-native-reanimated/plugin',
       isJest && '@babel/plugin-transform-flow-strip-types',

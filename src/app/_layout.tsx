@@ -1,17 +1,27 @@
 // Root layout with font loading, theme setup, and splash screen management
 // Fonts are loaded asynchronously; splash screen is hidden once ready to improve perceived performance
-import { useEffect } from 'react';
-import { DarkTheme, DefaultTheme, ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import * as SplashScreen from 'expo-splash-screen';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  useFonts,
+} from '@expo-google-fonts/inter';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider as NavThemeProvider,
+} from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { Stack } from 'expo-router';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 import '@/global.css';
 
-import { SightingsProvider } from '@/context/SightingsContext';
 import { ThemeProvider, useAppTheme } from '@/context/ThemeContext';
+import { SightingsProvider } from '@/context/SightingsContext';
 import { useNotifications } from '@/hooks/useNotifications';
 
 SplashScreen.preventAutoHideAsync();
