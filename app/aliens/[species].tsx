@@ -1,11 +1,14 @@
 import { Pressable, ScrollView, View } from 'react-native';
+import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SightingCard } from '@/components/SightingCard';
 import { SAMPLE_ALIENS } from '@/data/aliens';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
+import { capitalize } from '@/utils/capitalize';
 
 const categoryEmoji: Record<string, string> = {
   friendly: '🟢',
@@ -36,12 +39,28 @@ export default function SpeciesDetailScreen() {
 
   return (
     <ThemedView variant="background" className="flex-1">
-      <Stack.Screen options={{ title: species.name }} />
+      <Stack.Screen
+        options={{
+          title: species.name,
+          headerLeft: () => (
+            <Pressable onPress={() => router.back()} hitSlop={8}>
+              <MaterialIcons name="arrow-back" size={28} color="#00D4FF" />
+            </Pressable>
+          ),
+        }}
+      />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
+        {species.imageUri !== undefined && (
+          <Image
+            source={typeof species.imageUri === 'string' ? { uri: species.imageUri } : species.imageUri}
+            style={{ width: '100%', height: 200 }}
+            contentFit="cover"
+          />
+        )}
         {/* Header */}
         <View
           className="px-5 pt-6 pb-6"
@@ -51,7 +70,7 @@ export default function SpeciesDetailScreen() {
             <ThemedText weight="bold" size="3xl" className="flex-1 mr-3">
               {species.name}
             </ThemedText>
-            <View className="items-end gap-2">
+            <View className="flex-row items-center gap-2 flex-shrink-0">
               <View
                 className="rounded-full px-3 py-1"
                 style={{ backgroundColor: `${threatColor}22` }}
@@ -61,7 +80,7 @@ export default function SpeciesDetailScreen() {
                 </ThemedText>
               </View>
               <ThemedText size="sm">
-                {categoryEmoji[species.category]} {species.category}
+                {categoryEmoji[species.category]} {capitalize(species.category)}
               </ThemedText>
             </View>
           </View>

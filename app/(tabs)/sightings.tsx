@@ -1,16 +1,21 @@
-import { useCallback, useRef, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { SightingMarker } from '@/components/SightingMarker';
-import { SightingCallout } from '@/components/SightingCallout';
+import { SightingMapCard } from '@/components/SightingMapCard';
 import { SightingListItem } from '@/components/SightingListItem';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { DARK_MAP_STYLE } from '@/constants/mapStyle';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { Sighting } from '@/types';
+import { capitalize } from '@/utils/capitalize';
+import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { ThreatLevel } from '@/types';
 import { FlashList } from '@shopify/flash-list';
 
 type ViewMode = 'map' | 'list';
@@ -22,23 +27,75 @@ const INITIAL_REGION = {
   longitudeDelta: 30,
 };
 
+const AREA_51 = {
+  latitude: 37.235,
+  longitude: -115.8111,
+  latitudeDelta: 0.15,
+  longitudeDelta: 0.15,
+};
+
+const FAB_STYLE = {
+  backgroundColor: '#12122A',
+  width: 48,
+  height: 48,
+  borderRadius: 24,
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+  borderWidth: 1,
+  borderColor: '#2A2A4A',
+  shadowColor: '#000',
+  shadowOpacity: 0.4,
+  shadowRadius: 6,
+  elevation: 6,
+};
+
 export default function SightingsScreen() {
   const { sightings } = useSightingsContext();
-  const [viewMode, setViewMode] = useState<ViewMode>('map');
+  const { focusId, view, threat } = useLocalSearchParams<{ focusId?: string; view?: string; threat?: string }>();
+  const [viewMode, setViewMode] = useState<ViewMode>(view === 'list' ? 'list' : 'map');
   const [selectedSighting, setSelectedSighting] = useState<Sighting | null>(null);
+  const [speciesFilter, setSpeciesFilter] = useState<string>('all');
+  const [threatFilter, setThreatFilter] = useState<ThreatLevel | 'all'>(
+    (threat as ThreatLevel) ?? 'all'
+  );
+
+  const THREAT_LEVELS: Array<ThreatLevel | 'all'> = ['all', 'low', 'medium', 'high', 'critical'];
   const mapRef = useRef<MapView>(null);
+  const markerJustPressed = useRef(false);
+
+  const speciesOptions = useMemo(() => {
+    const set = new Set(sightings.map((s) => s.species).filter(Boolean) as string[]);
+    return ['all', ...Array.from(set).sort()];
+  }, [sightings]);
+
+  const visibleSightings = useMemo(() =>
+    sightings.filter((s) =>
+      (speciesFilter === 'all' || s.species === speciesFilter) &&
+      (threatFilter === 'all' || s.threatLevel === threatFilter)
+    ),
+    [sightings, speciesFilter, threatFilter]
+  );
+
+  useEffect(() => {
+    if (!focusId) return;
+    const target = sightings.find((s) => s.id === focusId);
+    if (!target) return;
+    setViewMode('map');
+    setSelectedSighting(target);
+    mapRef.current?.animateToRegion(
+      { latitude: target.latitude, longitude: target.longitude, latitudeDelta: 2, longitudeDelta: 2 },
+      600
+    );
+  }, [focusId, sightings]);
 
   const handleMarkerPress = useCallback((sighting: Sighting) => {
+    markerJustPressed.current = true;
     setSelectedSighting(sighting);
     mapRef.current?.animateToRegion(
-      {
-        latitude: sighting.latitude,
-        longitude: sighting.longitude,
-        latitudeDelta: 2,
-        longitudeDelta: 2,
-      },
+      { latitude: sighting.latitude, longitude: sighting.longitude, latitudeDelta: 2, longitudeDelta: 2 },
       500
     );
+    setTimeout(() => { markerJustPressed.current = false; }, 300);
   }, []);
 
   return (
@@ -52,19 +109,101 @@ export default function SightingsScreen() {
               <Pressable
                 key={mode}
                 onPress={() => setViewMode(mode)}
-                className="px-4 py-1.5 rounded-full"
+                className="px-3 py-1.5 rounded-full"
                 style={{ backgroundColor: viewMode === mode ? '#00D4FF22' : 'transparent' }}
               >
-                <ThemedText
-                  size="sm"
-                  style={{ color: viewMode === mode ? '#00D4FF' : '#555577' }}
-                >
-                  {mode === 'map' ? '🗺️ Map' : '📋 List'}
-                </ThemedText>
+                <MaterialIcons
+                  name={mode === 'map' ? 'map' : 'view-list'}
+                  size={22}
+                  color={viewMode === mode ? '#00D4FF' : '#555577'}
+                />
               </Pressable>
             ))}
           </View>
         </View>
+
+        {/* Threat filter */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ flexGrow: 0 }}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingTop: 4, paddingBottom: 4, alignItems: 'center' }}
+        >
+          {THREAT_LEVELS.map((level) => {
+            const active = threatFilter === level;
+            const color = level === 'all' ? '#00D4FF' : getThreatColor(level);
+            return (
+              <Pressable
+                key={level}
+                onPress={() => {
+                  setThreatFilter(level);
+                  if (selectedSighting && level !== 'all' && selectedSighting.threatLevel !== level) {
+                    setSelectedSighting(null);
+                  }
+                }}
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 3,
+                  borderRadius: 99,
+                  backgroundColor: active ? `${color}22` : '#1A1A35',
+                  borderWidth: 1,
+                  borderColor: active ? color : '#2A2A4A',
+                }}
+              >
+                <ThemedText
+                  size="sm"
+                  weight={active ? 'semibold' : 'normal'}
+                  style={{ color: active ? color : '#8888AA' }}
+                >
+                  {level === 'all' ? 'All threats' : getThreatLabel(level)}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        <View style={{ height: 6 }} />
+
+        {/* Species filter */}
+        {speciesOptions.length > 1 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ flexGrow: 0 }}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingTop: 4, paddingBottom: 8, alignItems: 'center' }}
+          >
+            {speciesOptions.map((sp) => {
+              const active = speciesFilter === sp;
+              return (
+                <Pressable
+                  key={sp}
+                  onPress={() => {
+                    setSpeciesFilter(sp);
+                    if (selectedSighting && sp !== 'all' && selectedSighting.species !== sp) {
+                      setSelectedSighting(null);
+                    }
+                  }}
+                  style={{
+                    paddingHorizontal: 12,
+                    paddingVertical: 3,
+                    borderRadius: 99,
+                    backgroundColor: active ? '#00D4FF22' : '#1A1A35',
+                    borderWidth: 1,
+                    borderColor: active ? '#00D4FF' : '#2A2A4A',
+                  }}
+                >
+                  <ThemedText
+                    size="sm"
+                    weight={active ? 'semibold' : 'normal'}
+                    style={{ color: active ? '#00D4FF' : '#8888AA' }}
+                  >
+                    {sp === 'all' ? 'All species' : capitalize(sp)}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        )}
 
         {viewMode === 'map' ? (
           <View className="flex-1">
@@ -77,21 +216,35 @@ export default function SightingsScreen() {
               showsUserLocation
               showsCompass={false}
               toolbarEnabled={false}
+              onPress={() => { if (!markerJustPressed.current) setSelectedSighting(null); }}
             >
-              {sightings.map((sighting) => (
+              {visibleSightings.map((sighting) => (
                 <SightingMarker
                   key={sighting.id}
                   sighting={sighting}
                   onPress={handleMarkerPress}
-                >
-                  {selectedSighting?.id === sighting.id && (
-                    <SightingCallout sighting={sighting} />
-                  )}
-                </SightingMarker>
+                />
               ))}
             </MapView>
 
-            {/* FAB */}
+            {/* Left FABs */}
+            <View style={{ position: 'absolute', bottom: 24, left: 20, gap: 12 }}>
+              <Pressable
+                onPress={() => mapRef.current?.animateToRegion(INITIAL_REGION, 600)}
+                style={FAB_STYLE}
+              >
+                <MaterialIcons name="zoom-out-map" size={22} color="#E8E8FF" />
+              </Pressable>
+
+              <Pressable
+                onPress={() => mapRef.current?.animateToRegion(AREA_51, 600)}
+                style={FAB_STYLE}
+              >
+                <Text style={{ fontSize: 24, lineHeight: 30 }}>👽</Text>
+              </Pressable>
+            </View>
+
+            {/* Report FAB */}
             <Pressable
               onPress={() => router.push('/(modals)/report-sighting')}
               style={{
@@ -112,10 +265,17 @@ export default function SightingsScreen() {
             >
               <ThemedText size="2xl" style={{ color: '#0A0A1A' }}>+</ThemedText>
             </Pressable>
+
+            {selectedSighting && (
+              <SightingMapCard
+                sighting={selectedSighting}
+                onDismiss={() => setSelectedSighting(null)}
+              />
+            )}
           </View>
         ) : (
           <FlashList
-            data={sightings}
+            data={visibleSightings}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <SightingListItem sighting={item} />}
             estimatedItemSize={72}

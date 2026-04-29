@@ -1,5 +1,6 @@
 import { View, type ViewProps } from 'react-native';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/use-theme';
 
 type ViewVariant = 'background' | 'surface' | 'card';
 
@@ -8,20 +9,24 @@ interface ThemedViewProps extends ViewProps {
   className?: string;
 }
 
-const variantClasses: Record<ViewVariant, string> = {
-  background: 'bg-[#0A0A1A]',
-  surface: 'bg-[#12122A]',
-  card: 'bg-[#1A1A35]',
-};
-
 export function ThemedView({
   variant = 'background',
   className,
+  style,
   ...props
 }: ThemedViewProps) {
+  const { colors } = useTheme();
+
+  const variantColors: Record<ViewVariant, string> = {
+    background: colors.background,
+    surface: colors.surface,
+    card: colors.card,
+  };
+
   return (
     <View
-      className={cn(variantClasses[variant], className)}
+      className={cn(className)}
+      style={[{ backgroundColor: variantColors[variant] }, style]}
       {...props}
     />
   );

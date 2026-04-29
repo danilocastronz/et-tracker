@@ -2,6 +2,8 @@ import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { Sighting } from '@/types';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { capitalize } from '@/utils/capitalize';
+import { formatDate } from '@/utils/formatDate';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
 
@@ -12,11 +14,7 @@ interface SightingCardProps {
 
 export function SightingCard({ sighting, compact = false }: SightingCardProps) {
   const threatColor = getThreatColor(sighting.threatLevel);
-  const date = new Date(sighting.reportedAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const date = formatDate(sighting.reportedAt);
 
   return (
     <Pressable onPress={() => router.push(`/sightings/${sighting.id}`)}>
@@ -57,7 +55,7 @@ export function SightingCard({ sighting, compact = false }: SightingCardProps) {
             </ThemedText>
             {sighting.species && (
               <ThemedText variant="accent" size="xs">
-                {sighting.species}
+                {capitalize(sighting.species)}
               </ThemedText>
             )}
           </View>

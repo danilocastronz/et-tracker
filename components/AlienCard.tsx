@@ -1,7 +1,9 @@
 import { Pressable, View } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { AlienSpecies } from '@/types';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { capitalize } from '@/utils/capitalize';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
 
@@ -55,7 +57,15 @@ export function AlienCard({ species, searchQuery = '' }: AlienCardProps) {
 
   return (
     <Pressable onPress={() => router.push(`/aliens/${species.slug}`)}>
-      <ThemedView variant="card" className="rounded-xl p-4 mb-3">
+      <ThemedView variant="card" className="rounded-xl overflow-hidden mb-3">
+        {species.imageUri !== undefined && (
+          <Image
+            source={typeof species.imageUri === 'string' ? { uri: species.imageUri } : species.imageUri}
+            style={{ width: '100%', height: 120 }}
+            contentFit="cover"
+          />
+        )}
+        <View className="p-4">
         <View className="flex-row items-start justify-between mb-2">
           <HighlightedText text={species.name} highlight={searchQuery} />
           <View className="flex-row gap-2 ml-2">
@@ -67,7 +77,7 @@ export function AlienCard({ species, searchQuery = '' }: AlienCardProps) {
                 size="xs"
                 style={{ color: categoryTextColor[species.category] ?? '#ffffff' }}
               >
-                {species.category}
+                {capitalize(species.category)}
               </ThemedText>
             </View>
             <View
@@ -92,6 +102,7 @@ export function AlienCard({ species, searchQuery = '' }: AlienCardProps) {
           <ThemedText variant="accent" size="xs">
             {species.traits.length} known traits
           </ThemedText>
+        </View>
         </View>
       </ThemedView>
     </Pressable>

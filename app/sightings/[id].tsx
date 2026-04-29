@@ -1,5 +1,6 @@
-import { Linking, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as Sharing from 'expo-sharing';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +8,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
+import { formatDate } from '@/utils/formatDate';
+import { capitalize } from '@/utils/capitalize';
 
 export default function SightingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,18 +29,10 @@ export default function SightingDetailScreen() {
   }
 
   const threatColor = getThreatColor(sighting.threatLevel);
-  const date = new Date(sighting.reportedAt).toLocaleString('en-US', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-  });
+  const date = formatDate(sighting.reportedAt);
 
   function openInMaps() {
-    const url = Platform.select({
-      ios: `maps:?q=${sighting!.title}&ll=${sighting!.latitude},${sighting!.longitude}`,
-      android: `geo:${sighting!.latitude},${sighting!.longitude}?q=${encodeURIComponent(sighting!.title)}`,
-      default: `https://maps.google.com/?q=${sighting!.latitude},${sighting!.longitude}`,
-    });
-    Linking.openURL(url!);
+    router.push(`/(tabs)/sightings?focusId=${sighting!.id}`);
   }
 
   async function handleShare() {
@@ -49,8 +44,21 @@ export default function SightingDetailScreen() {
   }
 
   function handleDelete() {
-    removeSighting(sighting.id);
-    router.back();
+    Alert.alert(
+      'Delete Sighting',
+      'This report will be permanently removed. Are you sure?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            removeSighting(sighting!.id);
+            router.back();
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -58,6 +66,11 @@ export default function SightingDetailScreen() {
       <Stack.Screen
         options={{
           title: 'Sighting Details',
+          headerLeft: () => (
+            <Pressable onPress={() => router.back()} hitSlop={8}>
+              <MaterialIcons name="arrow-back" size={28} color="#00D4FF" />
+            </Pressable>
+          ),
           headerRight: () => (
             <View className="flex-row gap-4 mr-2">
               {sighting.photoUri && (
@@ -107,7 +120,7 @@ export default function SightingDetailScreen() {
             {sighting.species && (
               <View className="bg-[#00D4FF11] rounded-full px-3 py-1">
                 <ThemedText variant="accent" size="xs">
-                  Species: {sighting.species}
+                  Species: {capitalize(sighting.species)}
                 </ThemedText>
               </View>
             )}
@@ -157,7 +170,7 @@ export default function SightingDetailScreen() {
               <View>
                 <ThemedText weight="semibold" size="sm">View Species Profile</ThemedText>
                 <ThemedText variant="secondary" size="xs" className="mt-0.5">
-                  {sighting.species} field guide entry
+                  {capitalize(sighting.species)} field guide entry
                 </ThemedText>
               </View>
               <ThemedText variant="accent" size="lg">›</ThemedText>

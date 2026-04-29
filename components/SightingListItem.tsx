@@ -2,6 +2,7 @@ import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { Sighting } from '@/types';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { formatDate } from '@/utils/formatDate';
 import { ThemedText } from './ThemedText';
 
 interface SightingListItemProps {
@@ -10,10 +11,6 @@ interface SightingListItemProps {
 
 export function SightingListItem({ sighting }: SightingListItemProps) {
   const threatColor = getThreatColor(sighting.threatLevel);
-  const date = new Date(sighting.reportedAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
 
   return (
     <Pressable onPress={() => router.push(`/sightings/${sighting.id}`)}>
@@ -29,7 +26,7 @@ export function SightingListItem({ sighting }: SightingListItemProps) {
             <ThemedText size="xs" style={{ color: threatColor }}>
               {getThreatLabel(sighting.threatLevel)}
             </ThemedText>
-            <ThemedText variant="muted" size="xs">· {date}</ThemedText>
+            <ThemedText variant="muted" size="xs">· {formatDate(sighting.reportedAt)}</ThemedText>
           </View>
         </View>
         <View className="pr-4">

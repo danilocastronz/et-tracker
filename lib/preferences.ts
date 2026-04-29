@@ -10,6 +10,8 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   defaultThreatFilter: 'all',
   showCompactCards: false,
   mapFollowsLocation: true,
+  displayName: 'Field Agent',
+  avatarUri: undefined,
 };
 
 export async function loadPreferences(): Promise<UserPreferences> {

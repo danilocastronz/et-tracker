@@ -24,7 +24,7 @@ export interface AlienSpecies {
   description: string;
   origin: string;
   threatLevel: ThreatLevel;
-  imageUri?: string;
+  imageUri?: string | number;
   traits: string[];
   firstSighted: string;
 }
@@ -45,6 +45,8 @@ export interface UserPreferences {
   defaultThreatFilter: ThreatLevel | 'all';
   showCompactCards: boolean;
   mapFollowsLocation: boolean;
+  displayName: string;
+  avatarUri?: string;
 }
 
 export interface NotificationPayload {

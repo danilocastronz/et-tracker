@@ -6,7 +6,22 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git checkout *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(gh auth *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Read(//Users/dancastro/**)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3)",
+      "Bash(grep -E '[A-Za-z]{4,}')",
+      "Bash(grep -v '^[A-F0-9]+$')",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "Bash(python3 -m http.server 8899)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)"
     ]
   }
 }

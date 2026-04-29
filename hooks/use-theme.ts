@@ -1,13 +1,12 @@
-import { COLORS } from '@/constants/theme';
+import { useAppTheme } from '@/context/ThemeContext';
+import { Colors } from '@/constants/theme';
 
 export interface Theme {
-  colors: typeof COLORS;
-  isDark: true;
+  colors: Colors;
+  isDark: boolean;
 }
 
 export function useTheme(): Theme {
-  return {
-    colors: COLORS,
-    isDark: true,
-  };
+  const { colors, isDark } = useAppTheme();
+  return { colors, isDark };
 }

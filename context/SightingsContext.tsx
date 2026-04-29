@@ -1,9 +1,12 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect } from 'react';
 import { Sighting, ThreatLevel } from '@/types';
+import { useSightingsDB } from '@/hooks/useSightingsDB';
+import { getSightings, insertSighting } from '@/lib/database';
 import { SAMPLE_SIGHTINGS } from '@/data/sightings';
 
 interface SightingsContextValue {
   sightings: Sighting[];
+  loading: boolean;
   addSighting: (sighting: Omit<Sighting, 'id'>) => Sighting;
   removeSighting: (id: string) => void;
   filterByThreatLevel: (level: ThreatLevel | 'all') => Sighting[];
@@ -12,32 +15,53 @@ interface SightingsContextValue {
 const SightingsContext = createContext<SightingsContextValue | null>(null);
 
 export function SightingsProvider({ children }: { children: React.ReactNode }) {
-  const [sightings, setSightings] = useState<Sighting[]>(SAMPLE_SIGHTINGS);
+  const db = useSightingsDB();
 
-  const addSighting = useCallback((sighting: Omit<Sighting, 'id'>): Sighting => {
-    const newSighting: Sighting = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      ...sighting,
-    };
-    setSightings((prev) => [newSighting, ...prev]);
-    return newSighting;
-  }, []);
+  // Seed sample data on first launch if the DB is empty
+  useEffect(() => {
+    if (db.loading) return;
+    if (db.sightings.length > 0) return;
+    (async () => {
+      const existing = await getSightings();
+      if (existing.length > 0) return;
+      for (const s of SAMPLE_SIGHTINGS) {
+        const { id, ...rest } = s;
+        await insertSighting(rest);
+      }
+      db.loadSightings();
+    })();
+  }, [db.loading]);
 
-  const removeSighting = useCallback((id: string) => {
-    setSightings((prev) => prev.filter((s) => s.id !== id));
-  }, []);
+  // Wrap async ops as sync-looking for backwards-compatible callers
+  const addSighting = useCallback(
+    (sighting: Omit<Sighting, 'id'>): Sighting => {
+      const optimisticId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const optimistic: Sighting = { id: optimisticId, ...sighting };
+      db.addSighting(sighting);
+      return optimistic;
+    },
+    [db.addSighting]
+  );
+
+  const removeSighting = useCallback(
+    (id: string) => { db.removeSighting(id); },
+    [db.removeSighting]
+  );
 
   const filterByThreatLevel = useCallback(
-    (level: ThreatLevel | 'all'): Sighting[] => {
-      if (level === 'all') return sightings;
-      return sightings.filter((s) => s.threatLevel === level);
-    },
-    [sightings]
+    (level: ThreatLevel | 'all') => db.filterByThreatLevel(level),
+    [db.filterByThreatLevel]
   );
 
   return (
     <SightingsContext.Provider
-      value={{ sightings, addSighting, removeSighting, filterByThreatLevel }}
+      value={{
+        sightings: db.sightings,
+        loading: db.loading,
+        addSighting,
+        removeSighting,
+        filterByThreatLevel,
+      }}
     >
       {children}
     </SightingsContext.Provider>

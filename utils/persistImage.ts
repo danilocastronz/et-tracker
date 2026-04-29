@@ -1,15 +1,15 @@
-import * as FileSystem from 'expo-file-system';
+import { File, Directory, Paths } from 'expo-file-system';
 
-export async function persistImage(tempUri: string): Promise<string> {
+export function persistImage(tempUri: string): string {
   const filename = `sighting-${Date.now()}.jpg`;
-  const destination = `${FileSystem.documentDirectory}sightings/${filename}`;
+  const dir = new Directory(Paths.document, 'sightings');
 
-  const dir = `${FileSystem.documentDirectory}sightings/`;
-  const dirInfo = await FileSystem.getInfoAsync(dir);
-  if (!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
+  if (!dir.exists) {
+    dir.create();
   }
 
-  await FileSystem.copyAsync({ from: tempUri, to: destination });
-  return destination;
+  const destination = new File(dir, filename);
+  new File(tempUri).copy(destination);
+
+  return destination.uri;
 }

@@ -1,5 +1,6 @@
 import { Text, type TextProps } from 'react-native';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/use-theme';
 
 type TextVariant = 'primary' | 'secondary' | 'muted' | 'accent' | 'error';
 type TextSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
@@ -11,14 +12,6 @@ interface ThemedTextProps extends TextProps {
   weight?: TextWeight;
   className?: string;
 }
-
-const variantClasses: Record<TextVariant, string> = {
-  primary: 'text-[#E8E8FF]',
-  secondary: 'text-[#8888AA]',
-  muted: 'text-[#555577]',
-  accent: 'text-[#00D4FF]',
-  error: 'text-[#EF4444]',
-};
 
 const sizeClasses: Record<TextSize, string> = {
   xs: 'text-xs',
@@ -43,16 +36,23 @@ export function ThemedText({
   size = 'base',
   weight = 'normal',
   className,
+  style,
   ...props
 }: ThemedTextProps) {
+  const { colors } = useTheme();
+
+  const variantColors: Record<TextVariant, string> = {
+    primary: colors.textPrimary,
+    secondary: colors.textSecondary,
+    muted: colors.textMuted,
+    accent: colors.primary,
+    error: colors.error,
+  };
+
   return (
     <Text
-      className={cn(
-        variantClasses[variant],
-        sizeClasses[size],
-        weightClasses[weight],
-        className
-      )}
+      className={cn(sizeClasses[size], weightClasses[weight], className)}
+      style={[{ color: variantColors[variant] }, style]}
       {...props}
     />
   );

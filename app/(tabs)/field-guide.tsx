@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
@@ -7,7 +7,7 @@ import { AlienCardSkeleton } from '@/components/AlienCardSkeleton';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SAMPLE_ALIENS } from '@/data/aliens';
-import { AlienCategory } from '@/types';
+import { AlienCategory, AlienSpecies } from '@/types';
 
 type CategoryFilter = AlienCategory | 'all';
 const CATEGORY_FILTERS: CategoryFilter[] = ['all', 'friendly', 'hostile', 'unknown'];
@@ -16,6 +16,7 @@ export default function FieldGuideScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [loading] = useState(false);
+  const listRef = useRef<FlashList<AlienSpecies>>(null);
 
   const filtered = useMemo(() => {
     return SAMPLE_ALIENS.filter((alien) => {
@@ -55,7 +56,10 @@ export default function FieldGuideScreen() {
             {CATEGORY_FILTERS.map((cat) => (
               <View
                 key={cat}
-                onTouchEnd={() => setCategoryFilter(cat)}
+                onTouchEnd={() => {
+                  setCategoryFilter(cat);
+                  listRef.current?.scrollToOffset({ offset: 0, animated: true });
+                }}
                 className="px-3 py-1.5 rounded-full"
                 style={{
                   backgroundColor: categoryFilter === cat ? '#00D4FF22' : '#1A1A35',
@@ -81,6 +85,7 @@ export default function FieldGuideScreen() {
           </View>
         ) : (
           <FlashList
+            ref={listRef}
             data={filtered}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (

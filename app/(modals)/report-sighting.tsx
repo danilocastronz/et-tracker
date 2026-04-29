@@ -8,7 +8,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { PhotoSection } from '@/components/report/PhotoSection';
 import { ThreatLevelSelector } from '@/components/report/ThreatLevelSelector';
@@ -92,6 +93,15 @@ export default function ReportSightingScreen() {
 
   return (
     <ThemedView variant="background" className="flex-1">
+      <Stack.Screen
+        options={{
+          headerLeft: () => (
+            <Pressable onPress={() => router.dismiss()} hitSlop={8}>
+              <MaterialIcons name="arrow-back" size={28} color="#00D4FF" />
+            </Pressable>
+          ),
+        }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
@@ -178,7 +188,7 @@ export default function ReportSightingScreen() {
             }}
           >
             <ThemedText weight="bold" style={{ color: '#0A0A1A' }}>
-              {submitting ? 'Submitting…' : '🛸 Submit Report'}
+              {submitting ? 'Submitting…' : 'Submit Report'}
             </ThemedText>
           </Pressable>
         </ScrollView>
