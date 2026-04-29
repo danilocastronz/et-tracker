@@ -3,7 +3,6 @@ import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import { AlienCard } from '@/components/AlienCard';
-import { AlienCardSkeleton } from '@/components/AlienCardSkeleton';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useAppTheme } from '@/context/ThemeContext';

@@ -1,7 +1,6 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-native';
+import { renderHook } from '@testing-library/react-native';
 import { SightingsProvider, useSightingsContext } from '@/context/SightingsContext';
-import { Sighting } from '@/types';
 
 const wrapper = ({ children }: { children: React.ReactNode }) =>
   React.createElement(SightingsProvider, { children });

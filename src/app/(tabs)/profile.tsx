@@ -25,7 +25,7 @@ function persistAvatar(tempUri: string): string {
 export default function ProfileScreen() {
   const { sightings } = useSightingsContext();
   const { preferences, loading, updatePreferences } = usePreferences();
-  const { isDark, setColorScheme, colors } = useAppTheme();
+  const { setColorScheme, colors } = useAppTheme();
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const inputRef = useRef<TextInput>(null);
