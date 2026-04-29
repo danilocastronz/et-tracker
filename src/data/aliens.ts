@@ -10,7 +10,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'The most frequently reported extraterrestrial type. Grey-skinned humanoids with large black eyes, elongated heads, and slight four-fingered hands. Observed to be primarily scientific in motivation, conducting biological assessments of Earth life.',
     origin: 'Zeta Reticuli Binary Star System',
     threatLevel: 'medium',
-    imageUri: require('../assets/app-aliens/grey.jpg'),
+    imageUri: require('../../assets/app-aliens/grey.jpg'),
     traits: [
       'Telepathic communication',
       'Advanced medical technology',
@@ -30,7 +30,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       "Tall, blonde, blue-eyed humanoids nearly indistinguishable from Northern Europeans. Reported to be philosophical, spiritually advanced, and deeply concerned about humanity's nuclear development. Often communicate via dreams or meditation.",
     origin: 'Pleiades Star Cluster',
     threatLevel: 'low',
-    imageUri: require('../assets/app-aliens/nordic.jpg'),
+    imageUri: require('../../assets/app-aliens/nordic.jpg'),
     traits: [
       'Human-like appearance',
       'Spiritual guides',
@@ -50,7 +50,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Bipedal reptilians ranging from 6 to 9 feet in height. Possess a hierarchical military-style society. Believed by many researchers to be operating covertly in positions of terrestrial influence. Territorial and resource-motivated.',
     origin: 'Draco Constellation',
     threatLevel: 'critical',
-    imageUri: require('../assets/app-aliens/reptilian.jpg'),
+    imageUri: require('../../assets/app-aliens/reptilian.jpg'),
     traits: [
       'Shapeshifting ability',
       'Cold-blooded physiology',
@@ -70,7 +70,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Gentle, luminous beings of slight build. Reported to travel in craft that appear as pure light. Their communication is empathic rather than verbal. Numerous contactees describe encounters as profoundly peaceful and transformative.',
     origin: 'Pleiades — Alcyone System',
     threatLevel: 'low',
-    imageUri: require('../assets/app-aliens/pleaidean.jpg'),
+    imageUri: require('../../assets/app-aliens/pleaidean.jpg'),
     traits: [
       'Photonic travel capability',
       'Empathic projection',
@@ -90,7 +90,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Extraordinarily tall insectoid beings, 7–8 feet, with long limbs and triangular faces. Often reported alongside Greys in abduction accounts, appearing to oversee procedures. Their motivations remain entirely opaque to researchers.',
     origin: 'Unknown — possibly non-local',
     threatLevel: 'high',
-    imageUri: require('../assets/app-aliens/mantis.jpg'),
+    imageUri: require('../../assets/app-aliens/mantis.jpg'),
     traits: [
       'Extreme height and thin limbs',
       'Apparent authority over Greys',
@@ -110,7 +110,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       "Ancient beings referenced in Sumerian texts, now believed by some researchers to have never left. Massive humanoids — reported at 10–14 feet — with a long documented interest in Earth's gold and mineral resources. Their relationship to humanity is complex and possibly genetic.",
     origin: 'Nibiru — disputed orbit',
     threatLevel: 'high',
-    imageUri: require('../assets/app-aliens/anunnaki.jpg'),
+    imageUri: require('../../assets/app-aliens/anunnaki.jpg'),
     traits: [
       'Immense physical stature',
       'Advanced genetic engineering',
@@ -130,7 +130,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Not confirmed as extraterrestrial, but classified here due to consistent non-human behavioral patterns. Pale, expressionless individuals who appear shortly after sightings to intimidate witnesses. Speak in monotone, show limited understanding of common human customs.',
     origin: 'Unknown — possibly Earth-based hybrid program',
     threatLevel: 'medium',
-    imageUri: require('../assets/app-aliens/men in black.jpg'),
+    imageUri: require('../../assets/app-aliens/men in black.jpg'),
     traits: [
       'Memory suppression techniques',
       'Appear immediately after sightings',
@@ -150,7 +150,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Highly evolved energy beings who have reportedly attained a near-physical state. Described as healers and interdimensional guides. Their technology is reported to be entirely consciousness-based, with no mechanical components whatsoever.',
     origin: 'Arcturus — Boötes Constellation',
     threatLevel: 'low',
-    imageUri: require('../assets/app-aliens/arcturian.jpeg'),
+    imageUri: require('../../assets/app-aliens/arcturian.jpeg'),
     traits: [
       'Consciousness-based technology',
       'Healing and energy medicine',
