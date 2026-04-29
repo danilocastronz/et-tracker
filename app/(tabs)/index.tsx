@@ -1,98 +1,109 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { RadarAnimation } from '@/components/RadarAnimation';
+import { UFOFlyby } from '@/components/UFOFlyby';
+import { SightingCard } from '@/components/SightingCard';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { useSightingsContext } from '@/context/SightingsContext';
+import { getThreatColor } from '@/utils/threatLevel';
+import { ThreatLevel } from '@/types';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const THREAT_LEVELS: ThreatLevel[] = ['low', 'medium', 'high', 'critical'];
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const { sightings } = useSightingsContext();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const stats: Record<ThreatLevel, number> = {
+    low: 0,
+    medium: 0,
+    high: 0,
+    critical: 0,
+  };
+  sightings.forEach((s) => stats[s.threatLevel]++);
+
+  const recentSightings = sightings.slice(0, 3);
+
+  return (
+    <ThemedView variant="background" className="flex-1">
+      <SafeAreaView className="flex-1">
+        <UFOFlyby />
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 32 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View className="items-center pt-8 pb-6 px-6">
+            <RadarAnimation size={160} color="#00D4FF" />
+            <ThemedText weight="bold" size="2xl" className="mt-4 text-center">
+              ET Tracker
+            </ThemedText>
+            <ThemedText variant="secondary" size="sm" className="text-center mt-1">
+              Monitoring extraterrestrial activity worldwide
+            </ThemedText>
+          </View>
+
+          {/* Stats Grid */}
+          <View className="px-6 mb-6">
+            <ThemedText weight="semibold" size="sm" variant="secondary" className="mb-3 uppercase tracking-widest">
+              Threat Overview
+            </ThemedText>
+            <View className="flex-row flex-wrap gap-3">
+              {THREAT_LEVELS.map((level) => {
+                const color = getThreatColor(level);
+                return (
+                  <View
+                    key={level}
+                    className="flex-1 min-w-[40%] bg-[#1A1A35] rounded-xl p-4 items-center"
+                    style={{ borderTopWidth: 2, borderTopColor: color }}
+                  >
+                    <ThemedText
+                      weight="bold"
+                      size="3xl"
+                      style={{ color }}
+                    >
+                      {stats[level]}
+                    </ThemedText>
+                    <ThemedText variant="secondary" size="xs" className="capitalize mt-1">
+                      {level}
+                    </ThemedText>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* Recent Sightings */}
+          <View className="px-6 mb-4">
+            <View className="flex-row items-center justify-between mb-3">
+              <ThemedText weight="semibold" size="sm" variant="secondary" className="uppercase tracking-widest">
+                Recent Sightings
+              </ThemedText>
+              <Pressable onPress={() => router.push('/(tabs)/sightings')}>
+                <ThemedText variant="accent" size="sm">View Map →</ThemedText>
+              </Pressable>
+            </View>
+            {recentSightings.map((sighting) => (
+              <SightingCard key={sighting.id} sighting={sighting} compact />
+            ))}
+          </View>
+
+          {/* Report Button */}
+          <View className="px-6">
+            <Pressable
+              onPress={() => router.push('/(modals)/report-sighting')}
+              className="bg-[#00D4FF] rounded-2xl py-4 items-center"
+              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+            >
+              <ThemedText weight="bold" size="base" style={{ color: '#0A0A1A' }}>
+                🛸 Report New Sighting
+              </ThemedText>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
