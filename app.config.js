@@ -89,21 +89,6 @@ module.exports = () => {
       experiments: {
         typedRoutes: true,
       },
-      // Optional: Sentry error reporting setup
-      ...(process.env.EXPO_PUBLIC_SENTRY_DSN && {
-        hooks: {
-          postPublish: [
-            {
-              file: 'sentry-expo/hooks/postPublish',
-              config: {
-                organization: process.env.SENTRY_ORG,
-                project: process.env.SENTRY_PROJECT,
-                authToken: process.env.SENTRY_AUTH_TOKEN,
-              },
-            },
-          ],
-        },
-      }),
     },
   };
 };

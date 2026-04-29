@@ -27,6 +27,7 @@ export interface AlienSpecies {
   imageUri?: string | number;
   traits: string[];
   firstSighted: string;
+  sightingCount: number;
 }
 
 export interface User {

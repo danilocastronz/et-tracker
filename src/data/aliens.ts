@@ -19,6 +19,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'No visible ears or nose',
     ],
     firstSighted: '1947-07-08',
+    sightingCount: 0,
   },
   {
     id: 'alien-002',
@@ -38,6 +39,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Vegetarian civilization',
     ],
     firstSighted: '1952-04-20',
+    sightingCount: 0,
   },
   {
     id: 'alien-003',
@@ -57,6 +59,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Extreme physical strength',
     ],
     firstSighted: '1933-01-01',
+    sightingCount: 0,
   },
   {
     id: 'alien-004',
@@ -76,6 +79,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Time perception beyond linear',
     ],
     firstSighted: '1954-06-14',
+    sightingCount: 0,
   },
   {
     id: 'alien-005',
@@ -95,6 +99,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Advanced surgical precision',
     ],
     firstSighted: '1961-09-19',
+    sightingCount: 0,
   },
   {
     id: 'alien-006',
@@ -114,6 +119,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Gold extraction technology',
     ],
     firstSighted: '3500-01-01 BCE',
+    sightingCount: 0,
   },
   {
     id: 'alien-007',
@@ -133,6 +139,7 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Unable to blink normally',
     ],
     firstSighted: '1947-07-10',
+    sightingCount: 0,
   },
   {
     id: 'alien-008',
@@ -152,5 +159,6 @@ export const SAMPLE_ALIENS: AlienSpecies[] = [
       'Communication via sacred geometry',
     ],
     firstSighted: '1973-03-07',
+    sightingCount: 0,
   },
 ];

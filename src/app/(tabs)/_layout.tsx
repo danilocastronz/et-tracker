@@ -3,7 +3,7 @@
 import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { HapticTab } from '@/components';
+import { HapticTab } from '@/components/HapticTab';
 import { useAppTheme } from '@/context/ThemeContext';
 
 export default function TabLayout() {

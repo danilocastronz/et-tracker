@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
-import { ThemedText } from '@/components';
+import { ThemedText } from '@/components/ThemedText';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 const renderWithTheme = (component: React.ReactElement) => {

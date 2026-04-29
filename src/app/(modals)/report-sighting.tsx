@@ -11,9 +11,11 @@ import {
 import { router, Stack } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { PhotoSection, ThreatLevelSelector, SpeciesSelector } from '@/components';
-import { ThemedText } from '@/components';
-import { ThemedView } from '@/components';
+import { PhotoSection } from '@/components/PhotoSection';
+import { ThreatLevelSelector } from '@/components/ThreatLevelSelector';
+import { SpeciesSelector } from '@/components/SpeciesSelector';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { useAppTheme } from '@/context/ThemeContext';
 import { useUserLocation } from '@/hooks/useUserLocation';
