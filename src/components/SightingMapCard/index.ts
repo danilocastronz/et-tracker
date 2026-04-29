@@ -1,0 +1,1 @@
+export { SightingMapCard } from './SightingMapCard';

@@ -1,11 +1,18 @@
 module.exports = function (api) {
-  api.cache(true);
+  const isJest = api.env('test');
+  api.cache(isJest ? false : true);
+
   return {
     presets: [
-      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      isJest
+        ? ['@babel/preset-env', { targets: { node: 'current' } }]
+        : ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      '@babel/preset-react',
+      '@babel/preset-typescript',
     ],
     plugins: [
-      'react-native-reanimated/plugin',
-    ],
+      !isJest && 'react-native-reanimated/plugin',
+      isJest && '@babel/plugin-transform-flow-strip-types',
+    ].filter(Boolean),
   };
 };
