@@ -1,4 +1,4 @@
-import { Linking, Pressable, ScrollView, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, View } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import * as Sharing from 'expo-sharing';
@@ -52,8 +52,6 @@ export default function SightingDetailScreen() {
     removeSighting(sighting.id);
     router.back();
   }
-
-  const { Platform } = require('react-native');
 
   return (
     <ThemedView variant="background" className="flex-1">

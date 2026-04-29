@@ -7,11 +7,13 @@ import { getThreatColor } from '@/utils/threatLevel';
 interface SightingMarkerProps {
   sighting: Sighting;
   onPress?: (sighting: Sighting) => void;
+  children?: React.ReactNode;
 }
 
 export const SightingMarker = memo(function SightingMarker({
   sighting,
   onPress,
+  children,
 }: SightingMarkerProps) {
   const color = getThreatColor(sighting.threatLevel);
 
@@ -35,6 +37,7 @@ export const SightingMarker = memo(function SightingMarker({
           elevation: 4,
         }}
       />
+      {children}
     </Marker>
   );
 });
