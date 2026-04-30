@@ -6,7 +6,7 @@ module.exports = function (api) {
     presets: [
       isJest
         ? ['@babel/preset-env', { targets: { node: 'current' } }]
-        : 'babel-preset-expo',
+        : ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
       ['@babel/preset-react', { runtime: 'automatic' }],
       '@babel/preset-typescript',
     ],
