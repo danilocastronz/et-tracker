@@ -4,25 +4,25 @@
 // Note: Most colors are now in context/ThemeContext.tsx for dynamic theme switching
 module.exports = {
   content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    './components/**/*.{js,jsx,ts,tsx}',
-    './context/**/*.{js,jsx,ts,tsx}',
-    './hooks/**/*.{js,jsx,ts,tsx}',
-    './lib/**/*.{js,jsx,ts,tsx}',
+    './src/app/**/*.{js,jsx,ts,tsx}',
+    './src/components/**/*.{js,jsx,ts,tsx}',
+    './src/context/**/*.{js,jsx,ts,tsx}',
+    './src/hooks/**/*.{js,jsx,ts,tsx}',
+    './src/lib/**/*.{js,jsx,ts,tsx}',
   ],
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
       colors: {
-        // Light mode defaults
-        background: '#F2F2F7',
+        // Light mode defaults — accessible contrast, space-themed blue-gray
+        background: '#F0F4F8',
         surface: '#FFFFFF',
         card: '#FFFFFF',
-        border: '#E0E0EA',
-        primary: '#0099BB',
-        'text-primary': '#1A1A2E',
-        'text-secondary': '#555570',
-        'text-muted': '#9999AA',
+        border: '#CBD5E1',
+        primary: '#0284C7',
+        'text-primary': '#0F172A',
+        'text-secondary': '#475569',
+        'text-muted': '#64748B',
         // Dark mode variants (used with dark: prefix)
         'background-dark': '#0A0A1A',
         'surface-dark': '#12122A',

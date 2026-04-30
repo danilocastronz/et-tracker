@@ -21,16 +21,16 @@ export const DARK_COLORS = {
 } as const;
 
 export const LIGHT_COLORS = {
-  background: '#F2F2F7',
+  background: '#F0F4F8',
   surface: '#FFFFFF',
   card: '#FFFFFF',
-  border: '#E0E0EA',
-  primary: '#0099BB',
+  border: '#CBD5E1',
+  primary: '#0284C7',
   secondary: '#7B2FBE',
   accent: '#FF6B35',
-  textPrimary: '#1A1A2E',
-  textSecondary: '#555570',
-  textMuted: '#9999AA',
+  textPrimary: '#0F172A',
+  textSecondary: '#475569',
+  textMuted: '#64748B',
   threatLow: '#16A34A',
   threatMedium: '#D97706',
   threatHigh: '#DC2626',

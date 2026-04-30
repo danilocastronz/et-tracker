@@ -1,16 +1,15 @@
-import { Pressable, ScrollView, View } from 'react-native';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { RadarAnimation } from '@/components/RadarAnimation';
-import { UFOFlyby } from '@/components/UFOFlyby';
-import { SightingCard } from '@/components/SightingCard';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { useSightingsContext } from '@/context/SightingsContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { RadarAnimation } from '@/components/RadarAnimation';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Pressable, ScrollView, View } from 'react-native';
+import { SightingCard } from '@/components/SightingCard';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 import { useAppTheme } from '@/context/ThemeContext';
 import { getThreatColor } from '@/utils/threatLevel';
 import { ThreatLevel } from '@/types';
+import { router } from 'expo-router';
 
 const THREAT_LEVELS: ThreatLevel[] = ['low', 'medium', 'high', 'critical'];
 
@@ -31,27 +30,33 @@ export default function HomeScreen() {
   return (
     <ThemedView variant="background" className="flex-1">
       <SafeAreaView className="flex-1" edges={['top']}>
-        <UFOFlyby />
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
         >
           {/* Header */}
-          <View className="items-center pt-8 pb-6 px-6">
+          <View className="items-center px-6 pt-8 pb-6">
             <RadarAnimation size={160} color={colors.primary} />
             <View className="flex-row items-center gap-2 mt-4">
-              <ThemedText weight="bold" size="2xl">ET Tracker</ThemedText>
+              <ThemedText weight="bold" size="2xl">
+                ET Tracker
+              </ThemedText>
               <MaterialCommunityIcons name="ufo-outline" size={28} color={colors.primary} />
             </View>
-            <ThemedText variant="secondary" size="sm" className="text-center mt-1">
+            <ThemedText variant="secondary" size="sm" className="mt-1 text-center">
               Monitoring extraterrestrial activity worldwide
             </ThemedText>
           </View>
 
           {/* Stats Grid */}
           <View className="px-6 mb-6">
-            <ThemedText weight="semibold" size="sm" variant="secondary" className="mb-3 uppercase tracking-widest">
+            <ThemedText
+              weight="semibold"
+              size="sm"
+              variant="secondary"
+              className="mb-3 tracking-widest uppercase"
+            >
               Threat Overview
             </ThemedText>
             <View className="flex-row flex-wrap gap-3">
@@ -61,13 +66,17 @@ export default function HomeScreen() {
                   <Pressable
                     key={level}
                     className="flex-1 min-w-[40%] rounded-xl p-4 items-center"
-                    style={{ backgroundColor: colors.card, borderTopWidth: 2, borderTopColor: color }}
+                    style={{
+                      backgroundColor: colors.card,
+                      borderTopWidth: 2,
+                      borderTopColor: color,
+                    }}
                     onPress={() => router.push(`/(tabs)/sightings?view=list&threat=${level}`)}
                   >
                     <ThemedText weight="bold" size="3xl" style={{ color }}>
                       {stats[level]}
                     </ThemedText>
-                    <ThemedText variant="secondary" size="xs" className="capitalize mt-1">
+                    <ThemedText variant="secondary" size="xs" className="mt-1 capitalize">
                       {level}
                     </ThemedText>
                   </Pressable>
@@ -79,11 +88,18 @@ export default function HomeScreen() {
           {/* Recent Sightings */}
           <View className="px-6 mb-4">
             <View className="flex-row items-center justify-between mb-3">
-              <ThemedText weight="semibold" size="sm" variant="secondary" className="uppercase tracking-widest">
+              <ThemedText
+                weight="semibold"
+                size="sm"
+                variant="secondary"
+                className="tracking-widest uppercase"
+              >
                 Recent Sightings
               </ThemedText>
               <Pressable onPress={() => router.push('/(tabs)/sightings?view=list')}>
-                <ThemedText variant="accent" size="sm">View All →</ThemedText>
+                <ThemedText variant="accent" size="sm">
+                  View All →
+                </ThemedText>
               </Pressable>
             </View>
             {recentSightings.map((sighting) => (
@@ -95,10 +111,9 @@ export default function HomeScreen() {
           <View className="px-6">
             <Pressable
               onPress={() => router.push('/(modals)/report-sighting')}
-              className="rounded-2xl py-4 items-center"
-              style={({ pressed }) => ({ backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 })}
+              className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary-dark rounded-xl"
             >
-              <ThemedText weight="bold" size="base" style={{ color: colors.background }}>
+              <ThemedText weight="bold" size="sm" style={{ color: '#0A0A1A' }}>
                 Report New Sighting
               </ThemedText>
             </Pressable>
