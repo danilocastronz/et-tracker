@@ -1,4 +1,5 @@
 import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { useAppTheme } from '@/context/ThemeContext';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -27,6 +28,7 @@ export default function SightingDetailScreen() {
     );
   }
 
+  const { colors } = useAppTheme();
   const threatColor = getThreatColor(sighting.threatLevel);
   const date = formatDate(sighting.reportedAt);
 
@@ -67,26 +69,23 @@ export default function SightingDetailScreen() {
           title: 'Sighting Details',
           headerLeft: () => (
             <Pressable onPress={() => router.back()} hitSlop={8}>
-              <MaterialIcons name="arrow-back" size={28} color="#00D4FF" />
+              <MaterialIcons name="arrow-back" size={28} color={colors.primary} />
             </Pressable>
           ),
           headerRight: () => (
-            <View className="flex-row gap-4 mr-2">
-              {sighting.photoUri && (
+            sighting.photoUri ? (
+              <View className="mr-2">
                 <Pressable onPress={handleShare}>
                   <ThemedText variant="accent" size="sm">Share</ThemedText>
                 </Pressable>
-              )}
-              <Pressable onPress={handleDelete}>
-                <ThemedText variant="error" size="sm">Delete</ThemedText>
-              </Pressable>
-            </View>
+              </View>
+            ) : null
           ),
         }}
       />
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Photo */}
@@ -177,6 +176,12 @@ export default function SightingDetailScreen() {
           )}
         </View>
       </ScrollView>
+
+      <View className="absolute bottom-0 left-0 right-0 px-5 pb-8 pt-3 bg-background dark:bg-background-dark">
+        <Pressable onPress={handleDelete} className="bg-red-600 rounded-xl p-4 items-center">
+          <ThemedText weight="bold" size="sm" className="text-white">Delete Sighting</ThemedText>
+        </Pressable>
+      </View>
     </ThemedView>
   );
 }

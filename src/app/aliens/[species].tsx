@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { SightingCard } from '@/components/SightingCard';
 import { SAMPLE_ALIENS } from '@/data/aliens';
 import { useSightingsContext } from '@/context/SightingsContext';
+import { useAppTheme } from '@/context/ThemeContext';
 import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
 import { capitalize } from '@/utils/capitalize';
 
@@ -19,6 +20,7 @@ const categoryEmoji: Record<string, string> = {
 export default function SpeciesDetailScreen() {
   const { species: slug } = useLocalSearchParams<{ species: string }>();
   const { sightings } = useSightingsContext();
+  const { colors } = useAppTheme();
 
   const species = SAMPLE_ALIENS.find((a) => a.slug === slug);
   const relatedSightings = sightings.filter((s) => s.species === slug).slice(0, 3);
@@ -44,7 +46,7 @@ export default function SpeciesDetailScreen() {
           title: species.name,
           headerLeft: () => (
             <Pressable onPress={() => router.back()} hitSlop={8}>
-              <MaterialIcons name="arrow-back" size={28} color="#00D4FF" />
+              <MaterialIcons name="arrow-back" size={28} color={colors.primary} />
             </Pressable>
           ),
         }}
@@ -62,10 +64,7 @@ export default function SpeciesDetailScreen() {
           />
         )}
         {/* Header */}
-        <View
-          className="px-5 pt-6 pb-6"
-          style={{ borderBottomWidth: 1, borderBottomColor: '#2A2A4A' }}
-        >
+        <View className="px-5 pt-6 pb-6 border-b border-border dark:border-border-dark">
           <View className="flex-row items-start justify-between mb-3">
             <ThemedText weight="bold" size="3xl" className="flex-1 mr-3">
               {species.name}
@@ -85,7 +84,7 @@ export default function SpeciesDetailScreen() {
             </View>
           </View>
 
-          <View className="bg-[#1A1A35] rounded-xl px-4 py-2 self-start mb-4">
+          <View className="bg-card dark:bg-card-dark rounded-xl px-4 py-2 self-start mb-4">
             <ThemedText variant="muted" size="xs">ORIGIN</ThemedText>
             <ThemedText weight="medium" size="sm">{species.origin}</ThemedText>
           </View>
@@ -116,7 +115,7 @@ export default function SpeciesDetailScreen() {
         </View>
 
         {/* First sighted */}
-        <View className="mx-5 bg-[#1A1A35] rounded-xl px-4 py-3 mb-5">
+        <View className="mx-5 bg-card dark:bg-card-dark rounded-xl px-4 py-3 mb-5">
           <ThemedText variant="muted" size="xs" className="mb-1">FIRST DOCUMENTED SIGHTING</ThemedText>
           <ThemedText weight="medium" size="sm">
             {species.firstSighted.length > 12

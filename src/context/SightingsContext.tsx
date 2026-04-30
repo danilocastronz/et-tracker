@@ -9,7 +9,7 @@ import { Sighting, ThreatLevel } from '@/types';
 interface SightingsContextValue {
   sightings: Sighting[];
   loading: boolean;
-  addSighting: (sighting: Omit<Sighting, 'id'>) => Sighting;
+  addSighting: (sighting: Omit<Sighting, 'id'>) => Promise<Sighting>;
   removeSighting: (id: string) => void;
   filterByThreatLevel: (level: ThreatLevel | 'all') => Sighting[];
   resetToMockData: () => Promise<void>;
@@ -30,27 +30,9 @@ export function SightingsProvider({ children }: { children: React.ReactNode }) {
     })();
   }, [db.loading, db.loadSightings]);
 
-  // Wrap async ops as sync-looking for backwards-compatible callers
   const addSighting = useCallback(
-    (sighting: Omit<Sighting, 'id'>): Sighting => {
-      const optimisticId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      const optimistic: Sighting = { id: optimisticId, ...sighting };
-      db.addSighting(sighting);
-      return optimistic;
-    },
+    (sighting: Omit<Sighting, 'id'>): Promise<Sighting> => db.addSighting(sighting),
     [db.addSighting]
-  );
-
-  const removeSighting = useCallback(
-    (id: string) => {
-      db.removeSighting(id);
-    },
-    [db.removeSighting]
-  );
-
-  const filterByThreatLevel = useCallback(
-    (level: ThreatLevel | 'all') => db.filterByThreatLevel(level),
-    [db.filterByThreatLevel]
   );
 
   const resetToMockData = useCallback(async () => {
@@ -69,8 +51,8 @@ export function SightingsProvider({ children }: { children: React.ReactNode }) {
         sightings: db.sightings,
         loading: db.loading,
         addSighting,
-        removeSighting,
-        filterByThreatLevel,
+        removeSighting: db.removeSighting,
+        filterByThreatLevel: db.filterByThreatLevel,
         resetToMockData,
         clearAllSightings,
       }}

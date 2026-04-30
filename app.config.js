@@ -11,7 +11,7 @@ module.exports = () => {
       orientation: 'portrait',
       icon: './assets/images/icon.png',
       scheme: 'ettracker',
-      userInterfaceStyle: 'dark',
+      userInterfaceStyle: 'automatic',
       newArchEnabled: true,
       backgroundColor: '#0A0A1A',
       ios: {

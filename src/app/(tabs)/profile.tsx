@@ -1,16 +1,18 @@
-import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { ProfileStatsSkeleton } from '@/components/ProfileStatsSkeleton';
+import { useSightingsContext } from '@/context/SightingsContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LOADING_DELAY } from '@/constants/loading';
+import { Directory, File, Paths } from 'expo-file-system';
+import { usePreferences } from '@/hooks/usePreferences';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useAppTheme } from '@/context/ThemeContext';
+import { useEffect, useRef, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
-import { MaterialIcons } from '@expo/vector-icons';
-import { File, Directory, Paths } from 'expo-file-system';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { usePreferences } from '@/hooks/usePreferences';
-import { useAppTheme } from '@/context/ThemeContext';
-import { useSightingsContext } from '@/context/SightingsContext';
 
 function persistAvatar(tempUri: string): string {
   const dir = new Directory(Paths.document, 'avatars');
@@ -26,7 +28,16 @@ export default function ProfileScreen() {
   const { colors } = useAppTheme();
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, LOADING_DELAY);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   function startEditingName() {
     setNameInput(preferences.displayName);
@@ -57,10 +68,29 @@ export default function ProfileScreen() {
     await updatePreferences({ avatarUri: uri });
   }
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
-      <ThemedView variant="background" className="flex-1 items-center justify-center">
-        <ThemedText variant="muted">Loading…</ThemedText>
+      <ThemedView variant="background" className="flex-1">
+        <SafeAreaView className="flex-1" edges={['top']}>
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ paddingBottom: 40 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <ProfileStatsSkeleton />
+            {/* About skeleton */}
+            <View className="px-4">
+              <View className="h-8" />
+              <View className="p-4 border bg-card dark:bg-card-dark border-border dark:border-border-dark rounded-xl">
+                <View className="items-center">
+                  <View className="w-48 h-12 rounded bg-border dark:bg-border-dark" />
+                  <View className="h-2" />
+                  <View className="w-32 h-10 rounded bg-border dark:bg-border-dark" />
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </ThemedView>
     );
   }
@@ -145,8 +175,13 @@ export default function ProfileScreen() {
                 </Pressable>
               </View>
             ) : (
-              <Pressable onPress={startEditingName} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <ThemedText weight="bold" size="xl">{preferences.displayName}</ThemedText>
+              <Pressable
+                onPress={startEditingName}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+              >
+                <ThemedText weight="bold" size="xl">
+                  {preferences.displayName}
+                </ThemedText>
                 <MaterialIcons name="edit" size={16} color={colors.textMuted} />
               </Pressable>
             )}
@@ -157,15 +192,22 @@ export default function ProfileScreen() {
           </View>
 
           {/* Stats */}
-          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4 mb-6 flex-row justify-around">
+          <View className="flex-row justify-around p-4 mx-4 mb-6 border bg-card dark:bg-card-dark border-border dark:border-border-dark rounded-xl">
             {[
               { label: 'Total', value: sightings.length },
-              { label: 'Critical', value: sightings.filter((s) => s.threatLevel === 'critical').length },
+              {
+                label: 'Critical',
+                value: sightings.filter((s) => s.threatLevel === 'critical').length,
+              },
               { label: 'With Photo', value: sightings.filter((s) => s.photoUri).length },
             ].map((stat) => (
               <View key={stat.label} className="items-center">
-                <ThemedText weight="bold" size="2xl" variant="accent">{stat.value}</ThemedText>
-                <ThemedText variant="secondary" size="xs" className="mt-1">{stat.label}</ThemedText>
+                <ThemedText weight="bold" size="2xl" variant="accent">
+                  {stat.value}
+                </ThemedText>
+                <ThemedText variant="secondary" size="xs" className="mt-1">
+                  {stat.label}
+                </ThemedText>
               </View>
             ))}
           </View>
@@ -175,15 +217,16 @@ export default function ProfileScreen() {
             weight="semibold"
             size="xs"
             variant="muted"
-            className="uppercase tracking-widest px-4 mb-2"
+            className="px-4 mb-2 tracking-widest uppercase"
           >
             About
           </ThemedText>
-          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4">
+          <View className="p-4 mx-4 border bg-card dark:bg-card-dark border-border dark:border-border-dark rounded-xl">
             <ThemedText variant="secondary" size="sm" className="text-center">
-              ET Tracker v{Constants.expoConfig?.version}{'\n'}Built with Expo SDK 54 & React Native
+              ET Tracker v{Constants.expoConfig?.version}
+              {'\n'}Built with Expo SDK 54 & React Native
             </ThemedText>
-            <ThemedText variant="muted" size="xs" className="text-center mt-2">
+            <ThemedText variant="muted" size="xs" className="mt-2 text-center">
               The truth is out there.
             </ThemedText>
           </View>

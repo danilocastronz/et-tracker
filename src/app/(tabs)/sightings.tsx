@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { cn } from '@/lib/utils';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
 import { SightingMarker } from '@/components/SightingMarker';
 import { SightingMapCard } from '@/components/SightingMapCard';
 import { SightingListItem } from '@/components/SightingListItem';
@@ -18,6 +17,8 @@ import { Sighting, ThreatLevel } from '@/types';
 import { capitalize } from '@/utils/capitalize';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
 import { FlashList } from '@shopify/flash-list';
+import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
+import { LOADING_DELAY } from '@/constants/loading';
 
 type ViewMode = 'map' | 'list';
 
@@ -35,46 +36,65 @@ const AREA_51 = {
   longitudeDelta: 0.15,
 };
 
+const THREAT_LEVELS: Array<ThreatLevel | 'all'> = ['all', 'low', 'medium', 'high', 'critical'];
+
 export default function SightingsScreen() {
   const { sightings } = useSightingsContext();
   const { colors } = useAppTheme();
-  const { focusId, view, threat } = useLocalSearchParams<{ focusId?: string; view?: string; threat?: string }>();
+  const { focusId, view, threat } = useLocalSearchParams<{
+    focusId?: string;
+    view?: string;
+    threat?: string;
+  }>();
   const [viewMode, setViewMode] = useState<ViewMode>(view === 'list' ? 'list' : 'map');
-
-  const FAB_STYLE = {
-    backgroundColor: colors.surface,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    borderWidth: 1,
-    borderColor: colors.border,
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 6,
-  };
   const [selectedSighting, setSelectedSighting] = useState<Sighting | null>(null);
   const [speciesFilter, setSpeciesFilter] = useState<string>('all');
   const [threatFilter, setThreatFilter] = useState<ThreatLevel | 'all'>(
     (threat as ThreatLevel) ?? 'all'
   );
+  const [isLoading, setIsLoading] = useState(true);
 
-  const THREAT_LEVELS: Array<ThreatLevel | 'all'> = ['all', 'low', 'medium', 'high', 'critical'];
   const mapRef = useRef<MapView>(null);
   const markerJustPressed = useRef(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, LOADING_DELAY);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const fabStyle = useMemo(
+    () => ({
+      backgroundColor: colors.surface,
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: '#000',
+      shadowOpacity: 0.4,
+      shadowRadius: 6,
+      elevation: 6,
+    }),
+    [colors.surface, colors.border]
+  );
 
   const speciesOptions = useMemo(() => {
     const set = new Set(sightings.map((s) => s.species).filter(Boolean) as string[]);
     return ['all', ...Array.from(set).sort()];
   }, [sightings]);
 
-  const visibleSightings = useMemo(() =>
-    sightings.filter((s) =>
-      (speciesFilter === 'all' || s.species === speciesFilter) &&
-      (threatFilter === 'all' || s.threatLevel === threatFilter)
-    ),
+  const visibleSightings = useMemo(
+    () =>
+      sightings.filter(
+        (s) =>
+          (speciesFilter === 'all' || s.species === speciesFilter) &&
+          (threatFilter === 'all' || s.threatLevel === threatFilter)
+      ),
     [sightings, speciesFilter, threatFilter]
   );
 
@@ -97,7 +117,9 @@ export default function SightingsScreen() {
       { latitude: sighting.latitude, longitude: sighting.longitude, latitudeDelta: 2, longitudeDelta: 2 },
       500
     );
-    setTimeout(() => { markerJustPressed.current = false; }, 300);
+    setTimeout(() => {
+      markerJustPressed.current = false;
+    }, 300);
   }, []);
 
   return (
@@ -131,7 +153,13 @@ export default function SightingsScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ flexGrow: 0 }}
-          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingTop: 4, paddingBottom: 4, alignItems: 'center' }}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            gap: 8,
+            paddingTop: 4,
+            paddingBottom: 4,
+            alignItems: 'center',
+          }}
         >
           {THREAT_LEVELS.map((level) => {
             const active = threatFilter === level;
@@ -149,7 +177,16 @@ export default function SightingsScreen() {
                   'rounded-full border',
                   !active && 'bg-card dark:bg-card-dark border-border dark:border-border-dark'
                 )}
-                style={active ? { paddingHorizontal: 12, paddingVertical: 3, backgroundColor: `${color}22`, borderColor: color } : { paddingHorizontal: 12, paddingVertical: 3 }}
+                style={
+                  active
+                    ? {
+                        paddingHorizontal: 12,
+                        paddingVertical: 3,
+                        backgroundColor: `${color}22`,
+                        borderColor: color,
+                      }
+                    : { paddingHorizontal: 12, paddingVertical: 3 }
+                }
               >
                 <ThemedText
                   size="sm"
@@ -172,7 +209,13 @@ export default function SightingsScreen() {
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{ flexGrow: 0 }}
-            contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingTop: 4, paddingBottom: 8, alignItems: 'center' }}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 8,
+              paddingTop: 4,
+              paddingBottom: 8,
+              alignItems: 'center',
+            }}
           >
             {speciesOptions.map((sp) => {
               const active = speciesFilter === sp;
@@ -216,7 +259,9 @@ export default function SightingsScreen() {
               showsUserLocation
               showsCompass={false}
               toolbarEnabled={false}
-              onPress={() => { if (!markerJustPressed.current) setSelectedSighting(null); }}
+              onPress={() => {
+                if (!markerJustPressed.current) setSelectedSighting(null);
+              }}
             >
               {visibleSightings.map((sighting) => (
                 <SightingMarker
@@ -231,16 +276,16 @@ export default function SightingsScreen() {
             <View style={{ position: 'absolute', bottom: 24, left: 20, gap: 12 }}>
               <Pressable
                 onPress={() => mapRef.current?.animateToRegion(INITIAL_REGION, 600)}
-                style={FAB_STYLE}
+                style={fabStyle}
               >
                 <MaterialIcons name="zoom-out-map" size={22} color={colors.textPrimary} />
               </Pressable>
 
               <Pressable
                 onPress={() => mapRef.current?.animateToRegion(AREA_51, 600)}
-                style={FAB_STYLE}
+                style={fabStyle}
               >
-                <Text style={{ fontSize: 24, lineHeight: 30 }}>👽</Text>
+                <ThemedText style={{ fontSize: 24, lineHeight: 30 }}>👽</ThemedText>
               </Pressable>
             </View>
 
@@ -274,17 +319,29 @@ export default function SightingsScreen() {
             )}
           </View>
         ) : (
-          <FlashList
-            data={visibleSightings}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <SightingListItem sighting={item} />}
-            contentContainerStyle={{ padding: 16 }}
-            ListEmptyComponent={
-              <ThemedText variant="muted" className="text-center mt-8">
-                No sightings logged yet.
-              </ThemedText>
-            }
-          />
+          <View className="flex-1">
+            {isLoading ? (
+              <ScrollView contentContainerStyle={{ padding: 16 }}>
+                <SightingCardSkeleton />
+                <SightingCardSkeleton />
+                <SightingCardSkeleton />
+                <SightingCardSkeleton />
+                <SightingCardSkeleton />
+              </ScrollView>
+            ) : (
+              <FlashList
+                data={visibleSightings}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <SightingListItem sighting={item} />}
+                contentContainerStyle={{ padding: 16 }}
+                ListEmptyComponent={
+                  <ThemedText variant="muted" className="text-center mt-8">
+                    No sightings logged yet.
+                  </ThemedText>
+                }
+              />
+            )}
+          </View>
         )}
       </SafeAreaView>
     </ThemedView>

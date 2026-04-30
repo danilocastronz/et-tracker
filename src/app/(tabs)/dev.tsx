@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,26 +8,29 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSightingsContext } from '@/context/SightingsContext';
+import { useAppTheme } from '@/context/ThemeContext';
 import { SAMPLE_SIGHTINGS } from '@/data/sightings';
 import { SIGHTINGS_KEY } from '@/lib/storage';
 
 const DEV_RESET_KEY = 'dev_last_reset';
 
 export default function DevScreen() {
-  if (!__DEV__) {
-    return <Redirect href="/(tabs)" />;
-  }
-
+  // Hooks must run unconditionally before any early return
   const { sightings, resetToMockData } = useSightingsContext();
+  const { colors } = useAppTheme();
   const [lastReset, setLastReset] = useState<string | null>(null);
+
+  const loadLastReset = useCallback(async () => {
+    const reset = await AsyncStorage.getItem(DEV_RESET_KEY);
+    setLastReset(reset);
+  }, []);
 
   useEffect(() => {
     loadLastReset();
-  }, []);
+  }, [loadLastReset]);
 
-  async function loadLastReset() {
-    const reset = await AsyncStorage.getItem(DEV_RESET_KEY);
-    setLastReset(reset);
+  if (!__DEV__) {
+    return <Redirect href="/(tabs)" />;
   }
 
   async function handleResetMockData() {
@@ -91,8 +94,8 @@ export default function DevScreen() {
               onPress={handleResetMockData}
               className="bg-primary dark:bg-primary-dark rounded-xl p-4 flex-row items-center justify-center gap-3"
             >
-              <MaterialIcons name="refresh" size={20} color="#0A0A1A" />
-              <ThemedText weight="bold" size="sm" style={{ color: '#0A0A1A' }}>
+              <MaterialIcons name="refresh" size={20} color={colors.background} />
+              <ThemedText weight="bold" size="sm" style={{ color: colors.background }}>
                 Reset to Mock Data
               </ThemedText>
             </Pressable>

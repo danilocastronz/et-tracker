@@ -17,13 +17,14 @@ function HighlightedText({ text, highlight }: HighlightedTextProps) {
     return <ThemedText weight="semibold">{text}</ThemedText>;
   }
 
-  const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  const parts = text.split(regex);
+  const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Split with a capturing group — odd indices in the result are the matched segments
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
 
   return (
     <ThemedText weight="semibold">
       {parts.map((part, i) =>
-        regex.test(part) ? (
+        i % 2 !== 0 ? (
           <ThemedText key={i} weight="semibold" variant="accent">
             {part}
           </ThemedText>

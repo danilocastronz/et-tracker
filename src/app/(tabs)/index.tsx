@@ -1,5 +1,8 @@
+import { ThreatOverviewSkeleton } from '@/components/ThreatOverviewSkeleton';
+import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LOADING_DELAY } from '@/constants/loading';
 import { RadarAnimation } from '@/components/RadarAnimation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, ScrollView, View } from 'react-native';
@@ -8,6 +11,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useAppTheme } from '@/context/ThemeContext';
 import { getThreatColor } from '@/utils/threatLevel';
+import { useEffect, useState } from 'react';
 import { ThreatLevel } from '@/types';
 import { router } from 'expo-router';
 
@@ -15,7 +19,16 @@ const THREAT_LEVELS: ThreatLevel[] = ['low', 'medium', 'high', 'critical'];
 
 export default function HomeScreen() {
   const { sightings } = useSightingsContext();
-  const { colors } = useAppTheme();
+  const { colors, isDark } = useAppTheme();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, LOADING_DELAY);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const stats: Record<ThreatLevel, number> = {
     low: 0,
@@ -37,7 +50,7 @@ export default function HomeScreen() {
         >
           {/* Header */}
           <View className="items-center px-6 pt-8 pb-6">
-            <RadarAnimation size={160} color={colors.primary} />
+            <RadarAnimation size={130} color={isDark ? colors.primary : '#4ADE80'} />
             <View className="flex-row items-center gap-2 mt-4">
               <ThemedText weight="bold" size="2xl">
                 ET Tracker
@@ -59,26 +72,30 @@ export default function HomeScreen() {
             >
               Threat Overview
             </ThemedText>
-            <View className="flex-row flex-wrap gap-3">
-              {THREAT_LEVELS.map((level) => {
-                const color = getThreatColor(level);
-                return (
-                  <Pressable
-                    key={level}
-                    className="flex-1 min-w-[40%] bg-card dark:bg-card-dark rounded-xl p-4 items-center"
-                    style={{ borderTopWidth: 2, borderTopColor: color }}
-                    onPress={() => router.push(`/(tabs)/sightings?view=list&threat=${level}`)}
-                  >
-                    <ThemedText weight="bold" size="3xl" style={{ color }}>
-                      {stats[level]}
-                    </ThemedText>
-                    <ThemedText variant="secondary" size="xs" className="mt-1 capitalize">
-                      {level}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-            </View>
+            {isLoading ? (
+              <ThreatOverviewSkeleton />
+            ) : (
+              <View className="flex-row flex-wrap gap-3">
+                {THREAT_LEVELS.map((level) => {
+                  const color = getThreatColor(level);
+                  return (
+                    <Pressable
+                      key={level}
+                      className="flex-1 min-w-[40%] bg-card dark:bg-card-dark rounded-xl p-4 items-center"
+                      style={{ borderWidth: 1, borderColor: color }}
+                      onPress={() => router.push(`/(tabs)/sightings?view=list&threat=${level}`)}
+                    >
+                      <ThemedText weight="bold" size="3xl" style={{ color }}>
+                        {stats[level]}
+                      </ThemedText>
+                      <ThemedText variant="secondary" size="xs" className="mt-1 capitalize">
+                        {level}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
           </View>
 
           {/* Recent Sightings */}
@@ -98,9 +115,17 @@ export default function HomeScreen() {
                 </ThemedText>
               </Pressable>
             </View>
-            {recentSightings.map((sighting) => (
-              <SightingCard key={sighting.id} sighting={sighting} compact />
-            ))}
+            {isLoading ? (
+              <>
+                <SightingCardSkeleton compact />
+                <SightingCardSkeleton compact />
+                <SightingCardSkeleton compact />
+              </>
+            ) : (
+              recentSightings.map((sighting) => (
+                <SightingCard key={sighting.id} sighting={sighting} compact />
+              ))
+            )}
           </View>
 
           {/* Report Button */}
@@ -109,7 +134,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/(modals)/report-sighting')}
               className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary-dark rounded-xl"
             >
-              <ThemedText weight="bold" size="sm" className="text-black">
+              <ThemedText weight="bold" size="sm" className="text-white dark:text-black">
                 Report New Sighting
               </ThemedText>
             </Pressable>

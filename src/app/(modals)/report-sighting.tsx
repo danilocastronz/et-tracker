@@ -69,7 +69,7 @@ export default function ReportSightingScreen() {
 
     setSubmitting(true);
     try {
-      const sighting = addSighting({
+      const sighting = await addSighting({
         title: form.title.trim(),
         description: form.description.trim(),
         latitude: latitude!,
