@@ -65,12 +65,8 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={level}
-                    className="flex-1 min-w-[40%] rounded-xl p-4 items-center"
-                    style={{
-                      backgroundColor: colors.card,
-                      borderTopWidth: 2,
-                      borderTopColor: color,
-                    }}
+                    className="flex-1 min-w-[40%] bg-card dark:bg-card-dark rounded-xl p-4 items-center"
+                    style={{ borderTopWidth: 2, borderTopColor: color }}
                     onPress={() => router.push(`/(tabs)/sightings?view=list&threat=${level}`)}
                   >
                     <ThemedText weight="bold" size="3xl" style={{ color }}>
@@ -113,7 +109,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/(modals)/report-sighting')}
               className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary-dark rounded-xl"
             >
-              <ThemedText weight="bold" size="sm" style={{ color: '#0A0A1A' }}>
+              <ThemedText weight="bold" size="sm" className="text-black">
                 Report New Sighting
               </ThemedText>
             </Pressable>

@@ -4,7 +4,6 @@ import { UserPreferences } from '@/types';
 const PREFERENCES_KEY = 'user_preferences';
 
 const DEFAULT_PREFERENCES: UserPreferences = {
-  colorScheme: 'system',
   notificationsEnabled: true,
   dailyReminderTime: '20:00',
   defaultThreatFilter: 'all',

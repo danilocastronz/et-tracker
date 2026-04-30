@@ -1,6 +1,5 @@
 export type ThreatLevel = 'low' | 'medium' | 'high' | 'critical';
 export type AlienCategory = 'friendly' | 'hostile' | 'unknown';
-export type ColorScheme = 'dark' | 'light' | 'system';
 
 export interface Sighting {
   id: string;
@@ -40,7 +39,6 @@ export interface User {
 }
 
 export interface UserPreferences {
-  colorScheme: ColorScheme;
   notificationsEnabled: boolean;
   dailyReminderTime: string;
   defaultThreatFilter: ThreatLevel | 'all';

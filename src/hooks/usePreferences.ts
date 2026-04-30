@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { UserPreferences } from '@/types';
 
 const DEFAULT_PREFERENCES: UserPreferences = {
-  colorScheme: 'system',
   notificationsEnabled: true,
   dailyReminderTime: '20:00',
   defaultThreatFilter: 'all',

@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Constants from 'expo-constants';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import * as Haptics from 'expo-haptics';
 import { MaterialIcons } from '@expo/vector-icons';
 import { File, Directory, Paths } from 'expo-file-system';
 import { ThemedText } from '@/components/ThemedText';
@@ -12,7 +11,6 @@ import { ThemedView } from '@/components/ThemedView';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useAppTheme } from '@/context/ThemeContext';
 import { useSightingsContext } from '@/context/SightingsContext';
-import { ColorScheme } from '@/types';
 
 function persistAvatar(tempUri: string): string {
   const dir = new Directory(Paths.document, 'avatars');
@@ -25,7 +23,7 @@ function persistAvatar(tempUri: string): string {
 export default function ProfileScreen() {
   const { sightings } = useSightingsContext();
   const { preferences, loading, updatePreferences } = usePreferences();
-  const { setColorScheme, colorScheme, colors } = useAppTheme();
+  const { colors } = useAppTheme();
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const inputRef = useRef<TextInput>(null);
@@ -169,53 +167,6 @@ export default function ProfileScreen() {
                 <ThemedText weight="bold" size="2xl" variant="accent">{stat.value}</ThemedText>
                 <ThemedText variant="secondary" size="xs" className="mt-1">{stat.label}</ThemedText>
               </View>
-            ))}
-          </View>
-
-          {/* Appearance */}
-          <ThemedText
-            weight="semibold"
-            size="xs"
-            variant="muted"
-            className="uppercase tracking-widest px-4 mb-2"
-          >
-            Appearance
-          </ThemedText>
-          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-2 mb-6 flex-row gap-2">
-            {(
-              [
-                { key: 'light', label: 'Light', icon: 'light-mode' },
-                { key: 'system', label: 'System', icon: 'smartphone' },
-                { key: 'dark', label: 'Dark', icon: 'dark-mode' },
-              ] as const
-            ).map((option) => (
-              <Pressable
-                key={option.key}
-                onPress={async () => {
-                  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  await setColorScheme(option.key as ColorScheme);
-                }}
-                className="flex-1 rounded-lg py-2 px-2 items-center justify-center"
-                style={{
-                  backgroundColor: colorScheme === option.key ? colors.primary : 'transparent',
-                }}
-              >
-                <MaterialIcons
-                  name={option.icon as any}
-                  size={20}
-                  color={colorScheme === option.key ? colors.background : colors.textMuted}
-                />
-                <ThemedText
-                  size="xs"
-                  weight="medium"
-                  className="mt-1"
-                  style={{
-                    color: colorScheme === option.key ? colors.background : undefined,
-                  }}
-                >
-                  {option.label}
-                </ThemedText>
-              </Pressable>
             ))}
           </View>
 
