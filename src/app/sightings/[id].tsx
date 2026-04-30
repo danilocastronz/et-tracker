@@ -117,14 +117,14 @@ export default function SightingDetailScreen() {
           {/* Meta row */}
           <View className="flex-row gap-3 mb-4 flex-wrap">
             {sighting.species && (
-              <View className="bg-[#00D4FF11] rounded-full px-3 py-1">
+              <View className="bg-primary/10 dark:bg-primary-dark/10 rounded-full px-3 py-1">
                 <ThemedText variant="accent" size="xs">
                   Species: {capitalize(sighting.species)}
                 </ThemedText>
               </View>
             )}
             {sighting.reporterName && (
-              <View className="bg-[#1A1A35] rounded-full px-3 py-1">
+              <View className="bg-card dark:bg-card-dark rounded-full px-3 py-1">
                 <ThemedText variant="secondary" size="xs">
                   Reported by {sighting.reporterName}
                 </ThemedText>
@@ -143,7 +143,7 @@ export default function SightingDetailScreen() {
           </View>
 
           {/* Coordinates + Maps button */}
-          <View className="bg-[#1A1A35] rounded-xl p-4 mb-5">
+          <View className="bg-card dark:bg-card-dark rounded-xl p-4 mb-5">
             <View className="flex-row items-center justify-between">
               <View>
                 <ThemedText variant="muted" size="xs" className="mb-1">COORDINATES</ThemedText>
@@ -153,7 +153,7 @@ export default function SightingDetailScreen() {
               </View>
               <Pressable
                 onPress={openInMaps}
-                className="bg-[#00D4FF22] rounded-lg px-4 py-2"
+                className="bg-primary/10 dark:bg-primary-dark/10 rounded-lg px-4 py-2"
               >
                 <ThemedText variant="accent" size="sm" weight="semibold">Open in Maps</ThemedText>
               </Pressable>
@@ -164,7 +164,7 @@ export default function SightingDetailScreen() {
           {sighting.species && (
             <Pressable
               onPress={() => router.push(`/aliens/${sighting.species}`)}
-              className="flex-row items-center justify-between bg-[#1A1A35] rounded-xl p-4"
+              className="flex-row items-center justify-between bg-card dark:bg-card-dark rounded-xl p-4"
             >
               <View>
                 <ThemedText weight="semibold" size="sm">View Species Profile</ThemedText>

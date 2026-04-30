@@ -25,7 +25,7 @@ function persistAvatar(tempUri: string): string {
 export default function ProfileScreen() {
   const { sightings } = useSightingsContext();
   const { preferences, loading, updatePreferences } = usePreferences();
-  const { setColorScheme, colors } = useAppTheme();
+  const { setColorScheme, colorScheme, colors } = useAppTheme();
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const inputRef = useRef<TextInput>(null);
@@ -197,20 +197,20 @@ export default function ProfileScreen() {
                 }}
                 className="flex-1 rounded-lg py-2 px-2 items-center justify-center"
                 style={{
-                  backgroundColor: preferences.colorScheme === option.key ? colors.primary : 'transparent',
+                  backgroundColor: colorScheme === option.key ? colors.primary : 'transparent',
                 }}
               >
                 <MaterialIcons
                   name={option.icon as any}
                   size={20}
-                  color={preferences.colorScheme === option.key ? colors.background : colors.textMuted}
+                  color={colorScheme === option.key ? colors.background : colors.textMuted}
                 />
                 <ThemedText
                   size="xs"
                   weight="medium"
                   className="mt-1"
                   style={{
-                    color: preferences.colorScheme === option.key ? colors.background : undefined,
+                    color: colorScheme === option.key ? colors.background : undefined,
                   }}
                 >
                   {option.label}

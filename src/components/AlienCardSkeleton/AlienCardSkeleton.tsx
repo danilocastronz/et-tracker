@@ -14,26 +14,19 @@ function SkeletonLine({ width, height = 12 }: { width: string | number; height?:
     opacity.value = withRepeat(withTiming(0.8, { duration: 900 }), -1, true);
   }, []);
 
-  const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
 
   return (
     <Animated.View
-      style={[
-        {
-          height,
-          width: width as any,
-          borderRadius: height / 2,
-          backgroundColor: '#2A2A4A',
-        },
-        style,
-      ]}
+      className="bg-border dark:bg-border-dark"
+      style={[{ height, width: width as any, borderRadius: height / 2 }, animatedStyle]}
     />
   );
 }
 
 export function AlienCardSkeleton() {
   return (
-    <View className="bg-[#1A1A35] rounded-xl p-4 mb-3">
+    <View className="bg-card dark:bg-card-dark rounded-xl p-4 mb-3">
       <View className="flex-row items-start justify-between mb-3">
         <SkeletonLine width="40%" height={16} />
         <View className="flex-row gap-2">

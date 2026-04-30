@@ -94,7 +94,7 @@ export function PhotoSection({ photoUri, onPhotoSelected }: PhotoSectionProps) {
   return (
     <Pressable
       onPress={showPicker}
-      className="border border-dashed border-[#2A2A4A] rounded-xl items-center justify-center py-10"
+      className="border border-dashed border-border dark:border-border-dark rounded-xl items-center justify-center py-10"
     >
       <ThemedText size="3xl" className="mb-2">
         📷

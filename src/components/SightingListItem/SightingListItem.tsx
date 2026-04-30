@@ -15,7 +15,7 @@ export function SightingListItem({ sighting }: SightingListItemProps) {
   return (
     <Pressable onPress={() => router.push(`/sightings/${sighting.id}`)}>
       <View
-        className="flex-row items-center bg-[#1A1A35] mb-2 rounded-xl overflow-hidden"
+        className="flex-row items-center bg-card dark:bg-card-dark mb-2 rounded-xl overflow-hidden"
         style={{ borderLeftWidth: 3, borderLeftColor: threatColor }}
       >
         <View className="flex-1 px-4 py-3">
