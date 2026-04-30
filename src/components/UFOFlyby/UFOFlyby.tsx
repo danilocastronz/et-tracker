@@ -75,10 +75,9 @@ export function UFOFlyby() {
         left: 0,
         right: 0,
         height: 60,
-        overflow: 'hidden',
       }}
     >
-      <Animated.View style={[{ position: 'absolute', top: 10 }, animatedStyle]}>
+      <Animated.View style={[{ position: 'absolute', top: 20 }, animatedStyle]}>
         <ThemedText style={{ fontSize: 32 }}>🛸</ThemedText>
       </Animated.View>
     </View>
