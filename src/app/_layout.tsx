@@ -27,6 +27,7 @@ import { useNotifications } from '@/hooks/useNotifications';
 
 // Initialize Sentry for error tracking
 const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
+let isSentryInitialized = false;
 
 if (SENTRY_DSN) {
   Sentry.init({
@@ -41,6 +42,7 @@ if (SENTRY_DSN) {
     // Uncomment to enable Spotlight in development
     // spotlight: __DEV__,
   });
+  isSentryInitialized = true;
   if (__DEV__) {
     console.log('✅ Sentry initialized successfully');
   }
@@ -108,7 +110,7 @@ function ThemedStack() {
   );
 }
 
-export default Sentry.wrap(function RootLayout() {
+function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
@@ -119,4 +121,6 @@ export default Sentry.wrap(function RootLayout() {
       </ThemeProvider>
     </GestureHandlerRootView>
   );
-});
+}
+
+export default isSentryInitialized ? Sentry.wrap(RootLayout) : RootLayout;

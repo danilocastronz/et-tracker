@@ -86,7 +86,7 @@ export default function HomeScreen() {
                       style={{ borderWidth: 1, borderColor: color }}
                       onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        router.push(`/(tabs)/sightings?view=list&threat=${level}`);
+                        router.push(`/(tabs)/sightings?view=map&threat=${level}`);
                       }}
                       accessibilityRole="button"
                       accessibilityLabel={`View ${stats[level]} ${level} threat sightings`}

@@ -58,6 +58,7 @@ export default function SightingsScreen() {
 
   const mapRef = useRef<MapView>(null);
   const markerJustPressed = useRef(false);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -73,6 +74,31 @@ export default function SightingsScreen() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Reset map to initial region when switching to map view or changing filters
+  useEffect(() => {
+    // Clear any pending animation
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+
+    if (viewMode === 'map' && !focusId && mapRef.current) {
+      // Debounce the animation by 300ms to handle rapid filter clicks
+      animationTimeoutRef.current = setTimeout(() => {
+        try {
+          mapRef.current?.animateToRegion(INITIAL_REGION, 600);
+        } catch (error) {
+          console.error('Map animation error:', error);
+        }
+      }, 300);
+    }
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, [viewMode, focusId, threatFilter, speciesFilter]);
 
   const fabStyle = useMemo(
     () => ({

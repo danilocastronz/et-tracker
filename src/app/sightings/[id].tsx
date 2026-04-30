@@ -1,15 +1,15 @@
-import { Alert, Pressable, ScrollView, View } from 'react-native';
-import { useAppTheme } from '@/context/ThemeContext';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import * as Sharing from 'expo-sharing';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { useSightingsContext } from '@/context/SightingsContext';
 import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
+import { Alert, Pressable, ScrollView, View, Share } from 'react-native';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { useSightingsContext } from '@/context/SightingsContext';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useAppTheme } from '@/context/ThemeContext';
+import { MaterialIcons } from '@expo/vector-icons';
 import { formatDate } from '@/utils/formatDate';
 import { capitalize } from '@/utils/capitalize';
+import * as Sharing from 'expo-sharing';
+import { Image } from 'expo-image';
 
 export default function SightingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,8 +20,12 @@ export default function SightingDetailScreen() {
   if (!sighting) {
     return (
       <ThemedView variant="background" className="flex-1 items-center justify-center">
-        <ThemedText size="4xl" className="mb-3">🌌</ThemedText>
-        <ThemedText weight="bold" size="lg">Sighting not found</ThemedText>
+        <ThemedText size="4xl" className="mb-3">
+          🌌
+        </ThemedText>
+        <ThemedText weight="bold" size="lg">
+          Sighting not found
+        </ThemedText>
         <Pressable onPress={() => router.back()} className="mt-4">
           <ThemedText variant="accent">← Go Back</ThemedText>
         </Pressable>
@@ -36,29 +40,50 @@ export default function SightingDetailScreen() {
   }
 
   async function handleShare() {
-    const available = await Sharing.isAvailableAsync();
-    if (!available) return;
-    if (sighting?.photoUri) {
-      await Sharing.shareAsync(sighting.photoUri);
+    try {
+      if (sighting?.photoUri) {
+        // Share photo using expo-sharing
+        const available = await Sharing.isAvailableAsync();
+        if (available) {
+          await Sharing.shareAsync(sighting.photoUri);
+        }
+      } else {
+        // Share text summary using React Native Share API
+        const summary = [
+          sighting.title,
+          `Threat Level: ${getThreatLabel(sighting.threatLevel)}`,
+          `Date: ${date}`,
+          sighting.species ? `Species: ${capitalize(sighting.species)}` : null,
+          sighting.reporterName ? `Reported by: ${sighting.reporterName}` : null,
+          `Coordinates: ${sighting.latitude.toFixed(5)}, ${sighting.longitude.toFixed(5)}`,
+          '',
+          sighting.description,
+        ]
+          .filter(Boolean)
+          .join('\n');
+
+        await Share.share({
+          message: summary,
+          title: 'Share Sighting Report',
+        });
+      }
+    } catch (error) {
+      console.error('Share failed:', error);
     }
   }
 
   function handleDelete() {
-    Alert.alert(
-      'Delete Sighting',
-      'This report will be permanently removed. Are you sure?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            removeSighting(sighting!.id);
-            router.back();
-          },
+    Alert.alert('Delete Sighting', 'This report will be permanently removed. Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          removeSighting(sighting!.id);
+          router.back();
         },
-      ]
-    );
+      },
+    ]);
   }
 
   return (
@@ -70,15 +95,6 @@ export default function SightingDetailScreen() {
             <Pressable onPress={() => router.back()} hitSlop={8}>
               <MaterialIcons name="arrow-back" size={28} color={colors.primary} />
             </Pressable>
-          ),
-          headerRight: () => (
-            sighting.photoUri ? (
-              <View className="mr-2">
-                <Pressable onPress={handleShare}>
-                  <ThemedText variant="accent" size="sm">Share</ThemedText>
-                </Pressable>
-              </View>
-            ) : null
           ),
         }}
       />
@@ -137,14 +153,18 @@ export default function SightingDetailScreen() {
 
           {/* Date */}
           <View className="flex-row items-center mb-2">
-            <ThemedText variant="muted" size="xs">📅 {date}</ThemedText>
+            <ThemedText variant="muted" size="xs">
+              📅 {date}
+            </ThemedText>
           </View>
 
           {/* Coordinates + Maps button */}
           <View className="bg-card dark:bg-card-dark rounded-xl p-4 mb-5">
             <View className="flex-row items-center justify-between">
               <View>
-                <ThemedText variant="muted" size="xs" className="mb-1">COORDINATES</ThemedText>
+                <ThemedText variant="muted" size="xs" className="mb-1">
+                  COORDINATES
+                </ThemedText>
                 <ThemedText weight="medium" size="sm">
                   {sighting.latitude.toFixed(5)}, {sighting.longitude.toFixed(5)}
                 </ThemedText>
@@ -153,7 +173,9 @@ export default function SightingDetailScreen() {
                 onPress={openInMaps}
                 className="bg-primary/10 dark:bg-primary-dark/10 rounded-lg px-4 py-2"
               >
-                <ThemedText variant="accent" size="sm" weight="semibold">Open in Maps</ThemedText>
+                <ThemedText variant="accent" size="sm" weight="semibold">
+                  Open in Maps
+                </ThemedText>
               </Pressable>
             </View>
           </View>
@@ -165,20 +187,34 @@ export default function SightingDetailScreen() {
               className="flex-row items-center justify-between bg-card dark:bg-card-dark rounded-xl p-4"
             >
               <View>
-                <ThemedText weight="semibold" size="sm">View Species Profile</ThemedText>
+                <ThemedText weight="semibold" size="sm">
+                  View Species Profile
+                </ThemedText>
                 <ThemedText variant="secondary" size="xs" className="mt-0.5">
                   {capitalize(sighting.species)} field guide entry
                 </ThemedText>
               </View>
-              <ThemedText variant="accent" size="lg">›</ThemedText>
+              <ThemedText variant="accent" size="lg">
+                ›
+              </ThemedText>
             </Pressable>
           )}
         </View>
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0 px-5 pb-8 pt-3 bg-background dark:bg-background-dark">
+      <View
+        className="absolute bottom-0 left-0 right-0 px-5 pb-8 pt-3 bg-background dark:bg-background-dark"
+        style={{ gap: 12 }}
+      >
+        <Pressable onPress={handleShare} className="bg-blue-600 rounded-xl p-4 items-center">
+          <ThemedText weight="bold" size="sm" className="text-white">
+            Share Sighting
+          </ThemedText>
+        </Pressable>
         <Pressable onPress={handleDelete} className="bg-red-600 rounded-xl p-4 items-center">
-          <ThemedText weight="bold" size="sm" className="text-white">Delete Sighting</ThemedText>
+          <ThemedText weight="bold" size="sm" className="text-white">
+            Delete Sighting
+          </ThemedText>
         </Pressable>
       </View>
     </ThemedView>
