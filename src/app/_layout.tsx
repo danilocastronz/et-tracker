@@ -14,6 +14,7 @@ import {
 } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Sentry from '@sentry/react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
@@ -23,6 +24,26 @@ import '@/global.css';
 import { ThemeProvider, useAppTheme } from '@/context/ThemeContext';
 import { SightingsProvider } from '@/context/SightingsContext';
 import { useNotifications } from '@/hooks/useNotifications';
+
+// Initialize Sentry for error tracking
+const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
+
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    sendDefaultPii: true,
+    enableLogs: true,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1,
+    integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+    debug: __DEV__, // Enable debug logs in development
+    // Uncomment to enable Spotlight in development
+    // spotlight: __DEV__,
+  });
+  console.log('Sentry initialized successfully');
+} else {
+  console.warn('Sentry DSN not found. Error tracking disabled.');
+}
 
 SplashScreen.preventAutoHideAsync();
 
@@ -84,7 +105,7 @@ function ThemedStack() {
   );
 }
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
@@ -95,4 +116,4 @@ export default function RootLayout() {
       </ThemeProvider>
     </GestureHandlerRootView>
   );
-}
+});

@@ -1,16 +1,17 @@
 import { ThreatOverviewSkeleton } from '@/components/ThreatOverviewSkeleton';
 import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
+import { Button, Pressable, ScrollView, View } from 'react-native';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RadarAnimation } from '@/components/RadarAnimation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Pressable, ScrollView, View } from 'react-native';
 import { SightingCard } from '@/components/SightingCard';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useAppTheme } from '@/context/ThemeContext';
 import { getThreatColor } from '@/utils/threatLevel';
 import { LOADING_DELAY } from '@/constants/loading';
+import * as Sentry from '@sentry/react-native';
 import { useEffect, useState } from 'react';
 import { ThreatLevel } from '@/types';
 import { router } from 'expo-router';
@@ -43,6 +44,13 @@ export default function HomeScreen() {
   return (
     <ThemedView variant="background" className="flex-1">
       <SafeAreaView className="flex-1" edges={['top']}>
+        <Button
+          title="Try!"
+          onPress={() => {
+            Sentry.captureException(new Error('First error'));
+          }}
+        />
+
         <ScrollView
           className="flex-1"
           contentContainerStyle={{ paddingBottom: 20 }}

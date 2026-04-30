@@ -90,6 +90,13 @@ module.exports = () => {
           },
         ],
         'expo-secure-store',
+        [
+          '@sentry/react-native/expo',
+          {
+            organization: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+          },
+        ],
       ],
       experiments: {
         typedRoutes: true,
