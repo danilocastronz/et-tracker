@@ -19,40 +19,47 @@ interface SightingsContextValue {
 const SightingsContext = createContext<SightingsContextValue | null>(null);
 
 export function SightingsProvider({ children }: { children: React.ReactNode }) {
-  const db = useSightingsDB();
+  const {
+    loading,
+    sightings,
+    loadSightings,
+    addSighting: dbAddSighting,
+    removeSighting,
+    filterByThreatLevel,
+  } = useSightingsDB();
 
   // Seed sample data on first launch if storage is empty
   useEffect(() => {
-    if (db.loading || db.sightings.length > 0) return;
+    if (loading || sightings.length > 0) return;
     (async () => {
       await resetSightings(SAMPLE_SIGHTINGS);
-      await db.loadSightings();
+      await loadSightings();
     })();
-  }, [db.loading, db.loadSightings]);
+  }, [loading, sightings, loadSightings]);
 
   const addSighting = useCallback(
-    (sighting: Omit<Sighting, 'id'>): Promise<Sighting> => db.addSighting(sighting),
-    [db.addSighting]
+    (sighting: Omit<Sighting, 'id'>): Promise<Sighting> => dbAddSighting(sighting),
+    [dbAddSighting]
   );
 
   const resetToMockData = useCallback(async () => {
     await resetSightings(SAMPLE_SIGHTINGS);
-    await db.loadSightings();
-  }, [db.loadSightings]);
+    await loadSightings();
+  }, [loadSightings]);
 
   const clearAllSightings = useCallback(async () => {
     await clearSightings();
-    await db.loadSightings();
-  }, [db.loadSightings]);
+    await loadSightings();
+  }, [loadSightings]);
 
   return (
     <SightingsContext.Provider
       value={{
-        sightings: db.sightings,
-        loading: db.loading,
+        sightings,
+        loading,
         addSighting,
-        removeSighting: db.removeSighting,
-        filterByThreatLevel: db.filterByThreatLevel,
+        removeSighting,
+        filterByThreatLevel,
         resetToMockData,
         clearAllSightings,
       }}

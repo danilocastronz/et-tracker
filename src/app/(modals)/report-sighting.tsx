@@ -105,7 +105,7 @@ export default function ReportSightingScreen() {
 
       router.dismiss();
       router.push(`/sightings/${sighting.id}`);
-    } catch (err) {
+    } catch {
       Alert.alert('Error', 'Failed to save sighting. Please try again.');
     } finally {
       setSubmitting(false);

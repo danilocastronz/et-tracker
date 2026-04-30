@@ -14,7 +14,7 @@ export default function NotFoundScreen() {
         Lost in Space
       </ThemedText>
       <ThemedText variant="secondary" size="base" className="text-center mb-8">
-        This sector of the galaxy doesn't exist in our records.
+        {"This sector of the galaxy doesn't exist in our records."}
       </ThemedText>
       <Pressable
         onPress={() => router.replace('/(tabs)')}

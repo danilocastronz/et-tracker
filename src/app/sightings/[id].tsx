@@ -15,6 +15,7 @@ export default function SightingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { sightings, removeSighting } = useSightingsContext();
   const sighting = sightings.find((s) => s.id === id);
+  const { colors } = useAppTheme();
 
   if (!sighting) {
     return (
@@ -27,8 +28,6 @@ export default function SightingDetailScreen() {
       </ThemedView>
     );
   }
-
-  const { colors } = useAppTheme();
   const threatColor = getThreatColor(sighting.threatLevel);
   const date = formatDate(sighting.reportedAt);
 

@@ -33,7 +33,7 @@ function RadarRing({ size, color, index }: { size: number; color: string; index:
       cancelAnimation(scale);
       cancelAnimation(opacity);
     };
-  }, [index]);
+  }, [index, opacity, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

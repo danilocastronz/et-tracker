@@ -17,7 +17,7 @@ async function compressImage(uri: string): Promise<string> {
       format: SaveFormat.JPEG,
     });
     return compressed.uri;
-  } catch (error) {
+  } catch {
     // If compression fails, return original
     return uri;
   }
