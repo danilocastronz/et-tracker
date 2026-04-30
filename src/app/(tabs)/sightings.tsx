@@ -1,24 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
-import { cn } from '@/lib/utils';
-import { router, useLocalSearchParams } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { SightingMarker } from '@/components/SightingMarker';
-import { SightingMapCard } from '@/components/SightingMapCard';
-import { SightingListItem } from '@/components/SightingListItem';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { DARK_MAP_STYLE } from '@/constants/mapStyle';
-import { useSightingsContext } from '@/context/SightingsContext';
-import { useAppTheme } from '@/context/ThemeContext';
-import { Sighting, ThreatLevel } from '@/types';
-import { capitalize } from '@/utils/capitalize';
-import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
-import { FlashList } from '@shopify/flash-list';
 import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
+import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { SightingListItem } from '@/components/SightingListItem';
+import { useSightingsContext } from '@/context/SightingsContext';
+import { SightingMapCard } from '@/components/SightingMapCard';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import { SightingMarker } from '@/components/SightingMarker';
+import { Pressable, ScrollView, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { DARK_MAP_STYLE } from '@/constants/mapStyle';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useAppTheme } from '@/context/ThemeContext';
 import { LOADING_DELAY } from '@/constants/loading';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
+import { capitalize } from '@/utils/capitalize';
+import { Sighting, ThreatLevel } from '@/types';
+import { cn } from '@/lib/utils';
 
 type ViewMode = 'map' | 'list';
 
@@ -105,7 +105,12 @@ export default function SightingsScreen() {
     setViewMode('map');
     setSelectedSighting(target);
     mapRef.current?.animateToRegion(
-      { latitude: target.latitude, longitude: target.longitude, latitudeDelta: 2, longitudeDelta: 2 },
+      {
+        latitude: target.latitude,
+        longitude: target.longitude,
+        latitudeDelta: 2,
+        longitudeDelta: 2,
+      },
       600
     );
   }, [focusId, sightings]);
@@ -114,7 +119,12 @@ export default function SightingsScreen() {
     markerJustPressed.current = true;
     setSelectedSighting(sighting);
     mapRef.current?.animateToRegion(
-      { latitude: sighting.latitude, longitude: sighting.longitude, latitudeDelta: 2, longitudeDelta: 2 },
+      {
+        latitude: sighting.latitude,
+        longitude: sighting.longitude,
+        latitudeDelta: 2,
+        longitudeDelta: 2,
+      },
       500
     );
     setTimeout(() => {
@@ -127,7 +137,9 @@ export default function SightingsScreen() {
       <SafeAreaView className="flex-1" edges={['top']}>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 py-3">
-          <ThemedText weight="bold" size="xl">Sightings</ThemedText>
+          <ThemedText weight="bold" size="xl">
+            Sightings
+          </ThemedText>
           <View className="flex-row bg-card dark:bg-card-dark rounded-full p-1 gap-1">
             {(['map', 'list'] as ViewMode[]).map((mode) => (
               <Pressable
@@ -169,7 +181,11 @@ export default function SightingsScreen() {
                 key={level}
                 onPress={() => {
                   setThreatFilter(level);
-                  if (selectedSighting && level !== 'all' && selectedSighting.threatLevel !== level) {
+                  if (
+                    selectedSighting &&
+                    level !== 'all' &&
+                    selectedSighting.threatLevel !== level
+                  ) {
                     setSelectedSighting(null);
                   }
                 }}
@@ -264,11 +280,7 @@ export default function SightingsScreen() {
               }}
             >
               {visibleSightings.map((sighting) => (
-                <SightingMarker
-                  key={sighting.id}
-                  sighting={sighting}
-                  onPress={handleMarkerPress}
-                />
+                <SightingMarker key={sighting.id} sighting={sighting} onPress={handleMarkerPress} />
               ))}
             </MapView>
 
@@ -308,7 +320,9 @@ export default function SightingsScreen() {
                 elevation: 8,
               }}
             >
-              <ThemedText size="2xl" style={{ color: colors.background }}>+</ThemedText>
+              <ThemedText size="2xl" style={{ color: colors.background }}>
+                +
+              </ThemedText>
             </Pressable>
 
             {selectedSighting && (

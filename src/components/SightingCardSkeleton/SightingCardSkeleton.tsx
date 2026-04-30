@@ -4,9 +4,9 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import { ThemedView } from '@/components/ThemedView';
 import { View } from 'react-native';
 import { useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 
 function SkeletonLine({ width, height = 12 }: { width: string | number; height?: number }) {
   const opacity = useSharedValue(0.3);
