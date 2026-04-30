@@ -1,6 +1,6 @@
-// Theme context that follows the system light/dark preference via React Native's Appearance API
+// Theme context that follows the system light/dark preference via NativeWind's color scheme hook
 import { createContext, useContext } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { Colors, getColors } from '@/constants/theme';
 
 interface ThemeContextValue {
@@ -14,11 +14,12 @@ const ThemeContext = createContext<ThemeContextValue>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const systemColorScheme = useColorScheme() ?? 'dark';
-  const isDark = systemColorScheme === 'dark';
+  const { colorScheme } = useColorScheme();
+  const scheme = colorScheme ?? 'dark';
+  const isDark = scheme === 'dark';
 
   return (
-    <ThemeContext.Provider value={{ colors: getColors(systemColorScheme), isDark }}>
+    <ThemeContext.Provider value={{ colors: getColors(scheme), isDark }}>
       {children}
     </ThemeContext.Provider>
   );
