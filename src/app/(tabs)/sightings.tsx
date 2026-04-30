@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 import { SightingListItem } from '@/components/SightingListItem';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SightingMapCard } from '@/components/SightingMapCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import { SightingMarker } from '@/components/SightingMarker';
-import { Pressable, ScrollView, View } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { router, useLocalSearchParams } from 'expo-router';
 import { DARK_MAP_STYLE } from '@/constants/mapStyle';
 import { ThemedView } from '@/components/ThemedView';
@@ -36,7 +36,7 @@ const AREA_51 = {
   longitudeDelta: 0.15,
 };
 
-const THREAT_LEVELS: Array<ThreatLevel | 'all'> = ['all', 'low', 'medium', 'high', 'critical'];
+const THREAT_LEVELS: (ThreatLevel | 'all')[] = ['all', 'low', 'medium', 'high', 'critical'];
 
 export default function SightingsScreen() {
   const { sightings } = useSightingsContext();
@@ -140,7 +140,7 @@ export default function SightingsScreen() {
           <ThemedText weight="bold" size="xl">
             Sightings
           </ThemedText>
-          <View className="flex-row bg-card dark:bg-card-dark rounded-full p-1 gap-1">
+          <View className="flex-row gap-1 p-1 rounded-full bg-card dark:bg-card-dark">
             {(['map', 'list'] as ViewMode[]).map((mode) => (
               <Pressable
                 key={mode}
@@ -269,12 +269,13 @@ export default function SightingsScreen() {
             <MapView
               ref={mapRef}
               style={{ flex: 1 }}
-              provider={PROVIDER_DEFAULT}
+              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
               initialRegion={INITIAL_REGION}
-              customMapStyle={DARK_MAP_STYLE}
-              showsUserLocation
+              customMapStyle={Platform.OS === 'android' ? undefined : DARK_MAP_STYLE}
+              showsUserLocation={true}
               showsCompass={false}
               toolbarEnabled={false}
+              moveOnMarkerPress={false}
               onPress={() => {
                 if (!markerJustPressed.current) setSelectedSighting(null);
               }}
@@ -349,7 +350,7 @@ export default function SightingsScreen() {
                 renderItem={({ item }) => <SightingListItem sighting={item} />}
                 contentContainerStyle={{ padding: 16 }}
                 ListEmptyComponent={
-                  <ThemedText variant="muted" className="text-center mt-8">
+                  <ThemedText variant="muted" className="mt-8 text-center">
                     No sightings logged yet.
                   </ThemedText>
                 }
