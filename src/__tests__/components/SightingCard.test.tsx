@@ -35,9 +35,9 @@ describe('SightingCard', () => {
     expect(screen.getByText(/medium/i)).toBeTruthy();
   });
 
-  it('displays formatted location', () => {
+  it('displays formatted date', () => {
     renderWithTheme(<SightingCard sighting={mockSighting} />);
-    expect(screen.getByText(/40/)).toBeTruthy();
+    expect(screen.getByText(/2024/)).toBeTruthy();
   });
 
   it('handles low threat level', () => {

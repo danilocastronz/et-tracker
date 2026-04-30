@@ -1,6 +1,7 @@
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useAppTheme } from '@/context/ThemeContext';
+import * as Sentry from '@sentry/react-native';
 import { Pressable } from 'react-native';
 import React from 'react';
 
@@ -47,7 +48,14 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('Caught error:', error, info.componentStack);
+    // Send error to Sentry with component stack
+    Sentry.captureException(error, {
+      contexts: {
+        react: {
+          componentStack: info.componentStack,
+        },
+      },
+    });
   }
 
   reset = () => this.setState({ hasError: false, error: undefined });

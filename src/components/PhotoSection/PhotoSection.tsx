@@ -1,4 +1,5 @@
 import { ActionSheetIOS, Alert, Platform, Pressable } from 'react-native';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { ThemedText } from '@/components/ThemedText';
 import { persistImage } from '@/utils/persistImage';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,6 +8,19 @@ import { Image } from 'expo-image';
 interface PhotoSectionProps {
   photoUri: string | null;
   onPhotoSelected: (uri: string) => void;
+}
+
+async function compressImage(uri: string): Promise<string> {
+  try {
+    const compressed = await manipulateAsync(uri, [{ resize: { width: 1200 } }], {
+      compress: 0.7,
+      format: SaveFormat.JPEG,
+    });
+    return compressed.uri;
+  } catch (error) {
+    // If compression fails, return original
+    return uri;
+  }
 }
 
 async function pickFromCamera(): Promise<string | null> {
@@ -20,7 +34,9 @@ async function pickFromCamera(): Promise<string | null> {
     aspect: [4, 3],
   });
   if (result.canceled) return null;
-  return persistImage(result.assets[0].uri);
+
+  const compressedUri = await compressImage(result.assets[0].uri);
+  return persistImage(compressedUri);
 }
 
 async function pickFromLibrary(): Promise<string | null> {
@@ -34,7 +50,9 @@ async function pickFromLibrary(): Promise<string | null> {
     aspect: [4, 3],
   });
   if (result.canceled) return null;
-  return persistImage(result.assets[0].uri);
+
+  const compressedUri = await compressImage(result.assets[0].uri);
+  return persistImage(compressedUri);
 }
 
 export function PhotoSection({ photoUri, onPhotoSelected }: PhotoSectionProps) {

@@ -7,13 +7,15 @@ export const BACKGROUND_LOCATION_TASK = 'background-location-task';
 
 TaskManager.defineTask(BACKGROUND_LOCATION_TASK, async ({ data, error }) => {
   if (error) {
-    console.error('Background location error:', error.message);
+    if (__DEV__) {
+      console.error('Background location error:', error.message);
+    }
     return;
   }
   if (data) {
     const { locations } = data as { locations: Location.LocationObject[] };
     const latest = locations[locations.length - 1];
-    if (latest) {
+    if (latest && __DEV__) {
       console.log('Background location update:', {
         lat: latest.coords.latitude,
         lng: latest.coords.longitude,

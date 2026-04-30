@@ -1,13 +1,14 @@
+import { Platform, Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
 import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
-import { Platform, Pressable, ScrollView, View } from 'react-native';
 import { SightingListItem } from '@/components/SightingListItem';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SightingMapCard } from '@/components/SightingMapCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SightingMarker } from '@/components/SightingMarker';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { router, useLocalSearchParams } from 'expo-router';
 import { DARK_MAP_STYLE } from '@/constants/mapStyle';
 import { ThemedView } from '@/components/ThemedView';
@@ -53,9 +54,17 @@ export default function SightingsScreen() {
     (threat as ThreatLevel) ?? 'all'
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const mapRef = useRef<MapView>(null);
   const markerJustPressed = useRef(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    // Simulate data refresh - in real app, would refetch from API
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setRefreshing(false);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -145,6 +154,9 @@ export default function SightingsScreen() {
               <Pressable
                 key={mode}
                 onPress={() => setViewMode(mode)}
+                accessibilityRole="button"
+                accessibilityLabel={`Switch to ${mode} view`}
+                accessibilityState={{ selected: viewMode === mode }}
                 className={cn(
                   'px-3 py-1.5 rounded-full',
                   viewMode === mode ? 'bg-primary/10 dark:bg-primary-dark/10' : ''
@@ -189,6 +201,9 @@ export default function SightingsScreen() {
                     setSelectedSighting(null);
                   }
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={`Filter by ${level === 'all' ? 'all threats' : getThreatLabel(level)}`}
+                accessibilityState={{ selected: active }}
                 className={cn(
                   'rounded-full border',
                   !active && 'bg-card dark:bg-card-dark border-border dark:border-border-dark'
@@ -265,74 +280,87 @@ export default function SightingsScreen() {
         )}
 
         {viewMode === 'map' ? (
-          <View className="flex-1">
-            <MapView
-              ref={mapRef}
-              style={{ flex: 1 }}
-              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-              initialRegion={INITIAL_REGION}
-              customMapStyle={Platform.OS === 'android' ? undefined : DARK_MAP_STYLE}
-              showsUserLocation={true}
-              showsCompass={false}
-              toolbarEnabled={false}
-              moveOnMarkerPress={false}
-              onPress={() => {
-                if (!markerJustPressed.current) setSelectedSighting(null);
-              }}
-            >
-              {visibleSightings.map((sighting) => (
-                <SightingMarker key={sighting.id} sighting={sighting} onPress={handleMarkerPress} />
-              ))}
-            </MapView>
-
-            {/* Left FABs */}
-            <View style={{ position: 'absolute', bottom: 24, left: 20, gap: 12 }}>
-              <Pressable
-                onPress={() => mapRef.current?.animateToRegion(INITIAL_REGION, 600)}
-                style={fabStyle}
+          <ErrorBoundary>
+            <View className="flex-1">
+              <MapView
+                ref={mapRef}
+                style={{ flex: 1 }}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                initialRegion={INITIAL_REGION}
+                customMapStyle={Platform.OS === 'android' ? undefined : DARK_MAP_STYLE}
+                showsUserLocation={true}
+                showsCompass={false}
+                toolbarEnabled={false}
+                moveOnMarkerPress={false}
+                onPress={() => {
+                  if (!markerJustPressed.current) setSelectedSighting(null);
+                }}
               >
-                <MaterialIcons name="zoom-out-map" size={22} color={colors.textPrimary} />
+                {visibleSightings.map((sighting) => (
+                  <SightingMarker
+                    key={sighting.id}
+                    sighting={sighting}
+                    onPress={handleMarkerPress}
+                  />
+                ))}
+              </MapView>
+
+              {/* Left FABs */}
+              <View style={{ position: 'absolute', bottom: 24, left: 20, gap: 12 }}>
+                <Pressable
+                  onPress={() => mapRef.current?.animateToRegion(INITIAL_REGION, 600)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Zoom out to full map view"
+                  style={fabStyle}
+                >
+                  <MaterialIcons name="zoom-out-map" size={22} color={colors.textPrimary} />
+                </Pressable>
+
+                <Pressable
+                  onPress={() => mapRef.current?.animateToRegion(AREA_51, 600)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Zoom to Area 51"
+                  style={fabStyle}
+                >
+                  <ThemedText style={{ fontSize: 24, lineHeight: 30 }}>👽</ThemedText>
+                </Pressable>
+              </View>
+
+              {/* Report FAB */}
+              <Pressable
+                onPress={() => router.push('/(modals)/report-sighting')}
+                accessibilityRole="button"
+                accessibilityLabel="Report new alien sighting"
+                accessibilityHint="Opens a form to document your encounter"
+                style={{
+                  position: 'absolute',
+                  bottom: 24,
+                  right: 20,
+                  backgroundColor: colors.primary,
+                  width: 56,
+                  height: 56,
+                  borderRadius: 28,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: colors.primary,
+                  shadowOpacity: 0.5,
+                  shadowRadius: 8,
+                  elevation: 8,
+                }}
+              >
+                <ThemedText size="2xl" style={{ color: colors.background }}>
+                  +
+                </ThemedText>
               </Pressable>
 
-              <Pressable
-                onPress={() => mapRef.current?.animateToRegion(AREA_51, 600)}
-                style={fabStyle}
-              >
-                <ThemedText style={{ fontSize: 24, lineHeight: 30 }}>👽</ThemedText>
-              </Pressable>
+              {selectedSighting && (
+                <SightingMapCard
+                  sighting={selectedSighting}
+                  onDismiss={() => setSelectedSighting(null)}
+                />
+              )}
             </View>
-
-            {/* Report FAB */}
-            <Pressable
-              onPress={() => router.push('/(modals)/report-sighting')}
-              style={{
-                position: 'absolute',
-                bottom: 24,
-                right: 20,
-                backgroundColor: colors.primary,
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: colors.primary,
-                shadowOpacity: 0.5,
-                shadowRadius: 8,
-                elevation: 8,
-              }}
-            >
-              <ThemedText size="2xl" style={{ color: colors.background }}>
-                +
-              </ThemedText>
-            </Pressable>
-
-            {selectedSighting && (
-              <SightingMapCard
-                sighting={selectedSighting}
-                onDismiss={() => setSelectedSighting(null)}
-              />
-            )}
-          </View>
+          </ErrorBoundary>
         ) : (
           <View className="flex-1">
             {isLoading ? (
@@ -349,6 +377,8 @@ export default function SightingsScreen() {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <SightingListItem sighting={item} />}
                 contentContainerStyle={{ padding: 16 }}
+                estimatedItemSize={120}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ListEmptyComponent={
                   <ThemedText variant="muted" className="mt-8 text-center">
                     No sightings logged yet.

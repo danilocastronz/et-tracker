@@ -1,6 +1,22 @@
-// Jest setup file for configuring the test environment
-// Note: jest-native matchers may not work in Node test environment
-// require('@testing-library/jest-native/extend-expect');
+global.__DEV__ = true;
+
+jest.mock('@sentry/react-native', () => ({
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+  init: jest.fn(),
+  wrap: jest.fn((fn) => fn),
+}));
+
+jest.mock('expo-image', () => ({
+  Image: 'Image',
+}));
+
+jest.mock('nativewind', () => ({
+  useColorScheme: jest.fn(() => ({ colorScheme: 'light', setColorScheme: jest.fn() })),
+  styled: jest.fn((component) => component),
+  cssInterop: jest.fn((component) => component),
+  remapProps: jest.fn((component) => component),
+}));
 
 // Mock React Native modules that may not work in Jest environment
 jest.mock('react-native-maps', () => ({
@@ -42,7 +58,8 @@ beforeAll(() => {
   console.error = (...args) => {
     if (
       typeof args[0] === 'string' &&
-      args[0].includes('Non-serializable values were found in the navigation state')
+      args[0].includes('Non-serializable values were found in the navigation state') ||
+      args[0].includes('react-test-renderer is deprecated')
     ) {
       return;
     }

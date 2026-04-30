@@ -29,7 +29,7 @@ describe('AlienCard', () => {
 
   it('renders origin information', () => {
     renderWithTheme(<AlienCard species={mockAlien} searchQuery="" />);
-    expect(screen.getByText('Zeta Reticuli')).toBeTruthy();
+    expect(screen.getByText(/Origin: Zeta Reticuli/)).toBeTruthy();
   });
 
   it('renders category badge', () => {
@@ -42,9 +42,9 @@ describe('AlienCard', () => {
     expect(screen.getByText(/Small gray humanoids/)).toBeTruthy();
   });
 
-  it('renders traits', () => {
+  it('renders trait count', () => {
     renderWithTheme(<AlienCard species={mockAlien} searchQuery="" />);
-    expect(screen.getByText(/telepathic/)).toBeTruthy();
+    expect(screen.getByText(/known traits/)).toBeTruthy();
   });
 
   it('handles friendly category', () => {

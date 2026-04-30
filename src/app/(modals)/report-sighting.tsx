@@ -1,4 +1,3 @@
-import { useCallback, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -8,19 +7,21 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { router, Stack } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { PhotoSection } from '@/components/PhotoSection';
 import { ThreatLevelSelector } from '@/components/ThreatLevelSelector';
-import { SpeciesSelector } from '@/components/SpeciesSelector';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { sanitizeText, validateCoordinates } from '@/utils/sanitize';
 import { useSightingsContext } from '@/context/SightingsContext';
-import { useAppTheme } from '@/context/ThemeContext';
+import { SpeciesSelector } from '@/components/SpeciesSelector';
 import { useUserLocation } from '@/hooks/useUserLocation';
-import { ThreatLevel } from '@/types';
+import { PhotoSection } from '@/components/PhotoSection';
 import { sendSightingAlert } from '@/lib/notifications';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useAppTheme } from '@/context/ThemeContext';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useCallback, useState } from 'react';
+import { router, Stack } from 'expo-router';
+import * as Haptics from 'expo-haptics';
+import { ThreatLevel } from '@/types';
 
 interface FormState {
   title: string;
@@ -57,6 +58,7 @@ export default function ReportSightingScreen() {
     if (!form.title.trim()) return 'A title is required.';
     if (!form.description.trim()) return 'Please describe what you witnessed.';
     if (!latitude || !longitude) return 'Unable to determine your location. Please try again.';
+    if (!validateCoordinates(latitude, longitude)) return 'Invalid location coordinates.';
     return null;
   }
 
@@ -70,14 +72,14 @@ export default function ReportSightingScreen() {
     setSubmitting(true);
     try {
       const sighting = await addSighting({
-        title: form.title.trim(),
-        description: form.description.trim(),
+        title: sanitizeText(form.title, 80),
+        description: sanitizeText(form.description, 1000),
         latitude: latitude!,
         longitude: longitude!,
         photoUri: form.photoUri ?? undefined,
         threatLevel: form.threatLevel,
-        species: form.species || undefined,
-        reporterName: form.reporterName.trim() || undefined,
+        species: form.species ? sanitizeText(form.species, 50) : undefined,
+        reporterName: form.reporterName ? sanitizeText(form.reporterName, 100) : undefined,
         reportedAt: new Date().toISOString(),
       });
 
@@ -121,7 +123,12 @@ export default function ReportSightingScreen() {
             placeholder="e.g. Triangular Formation Over Nevada"
             placeholderTextColor={colors.textMuted}
             className="rounded-xl px-4 py-3 border mb-4"
-            style={{ backgroundColor: colors.card, borderColor: colors.border, color: colors.textPrimary, fontSize: 16 }}
+            style={{
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              color: colors.textPrimary,
+              fontSize: 16,
+            }}
             maxLength={80}
           />
 
@@ -135,7 +142,14 @@ export default function ReportSightingScreen() {
             numberOfLines={5}
             textAlignVertical="top"
             className="rounded-xl px-4 py-3 border mb-4"
-            style={{ backgroundColor: colors.card, borderColor: colors.border, color: colors.textPrimary, fontSize: 16, minHeight: 120 }}
+            style={{
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              color: colors.textPrimary,
+              fontSize: 16,
+              minHeight: 120,
+            }}
+            maxLength={1000}
           />
 
           <FieldLabel>Threat Level *</FieldLabel>
@@ -148,10 +162,7 @@ export default function ReportSightingScreen() {
 
           <FieldLabel>Species (if identified)</FieldLabel>
           <View className="mb-4">
-            <SpeciesSelector
-              value={form.species}
-              onChange={(v) => update('species', v)}
-            />
+            <SpeciesSelector value={form.species} onChange={(v) => update('species', v)} />
           </View>
 
           <FieldLabel>Reporter Name (optional)</FieldLabel>
@@ -161,7 +172,12 @@ export default function ReportSightingScreen() {
             placeholder="How should we attribute this report?"
             placeholderTextColor={colors.textMuted}
             className="rounded-xl px-4 py-3 border mb-4"
-            style={{ backgroundColor: colors.card, borderColor: colors.border, color: colors.textPrimary, fontSize: 16 }}
+            style={{
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              color: colors.textPrimary,
+              fontSize: 16,
+            }}
             maxLength={50}
           />
 
@@ -201,7 +217,12 @@ export default function ReportSightingScreen() {
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <ThemedText weight="semibold" size="sm" variant="secondary" className="mb-2 uppercase tracking-wide">
+    <ThemedText
+      weight="semibold"
+      size="sm"
+      variant="secondary"
+      className="mb-2 uppercase tracking-wide"
+    >
       {children}
     </ThemedText>
   );

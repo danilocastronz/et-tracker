@@ -6,10 +6,13 @@ module.exports = function (api) {
     return {
       presets: [
         ['@babel/preset-env', { targets: { node: 'current' } }],
-        '@babel/preset-react',
-        '@babel/preset-typescript',
+        ['@babel/preset-react', { runtime: 'automatic' }],
+        ['@babel/preset-typescript', { allowDeclareFields: true }],
       ],
-      plugins: ['@babel/plugin-transform-flow-strip-types'],
+      plugins: [
+        '@babel/plugin-transform-flow-strip-types',
+        ['@babel/plugin-transform-private-methods', { loose: true }],
+      ],
     };
   }
 

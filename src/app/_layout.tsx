@@ -36,13 +36,16 @@ if (SENTRY_DSN) {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1,
     integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+    tracesSampleRate: 0.2, // 20% of transactions
     debug: __DEV__, // Enable debug logs in development
     // Uncomment to enable Spotlight in development
     // spotlight: __DEV__,
   });
-  console.log('Sentry initialized successfully');
-} else {
-  console.warn('Sentry DSN not found. Error tracking disabled.');
+  if (__DEV__) {
+    console.log('✅ Sentry initialized successfully');
+  }
+} else if (__DEV__) {
+  console.warn('⚠️ Sentry DSN not found. Error tracking disabled.');
 }
 
 SplashScreen.preventAutoHideAsync();

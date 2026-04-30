@@ -1,18 +1,18 @@
 import { ThreatOverviewSkeleton } from '@/components/ThreatOverviewSkeleton';
 import { SightingCardSkeleton } from '@/components/SightingCardSkeleton';
-import { Button, Pressable, ScrollView, View } from 'react-native';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RadarAnimation } from '@/components/RadarAnimation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Pressable, ScrollView, View } from 'react-native';
 import { SightingCard } from '@/components/SightingCard';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useAppTheme } from '@/context/ThemeContext';
 import { getThreatColor } from '@/utils/threatLevel';
 import { LOADING_DELAY } from '@/constants/loading';
-import * as Sentry from '@sentry/react-native';
 import { useEffect, useState } from 'react';
+import * as Haptics from 'expo-haptics';
 import { ThreatLevel } from '@/types';
 import { router } from 'expo-router';
 
@@ -44,13 +44,6 @@ export default function HomeScreen() {
   return (
     <ThemedView variant="background" className="flex-1">
       <SafeAreaView className="flex-1" edges={['top']}>
-        <Button
-          title="Try!"
-          onPress={() => {
-            Sentry.captureException(new Error('First error'));
-          }}
-        />
-
         <ScrollView
           className="flex-1"
           contentContainerStyle={{ paddingBottom: 20 }}
@@ -91,7 +84,12 @@ export default function HomeScreen() {
                       key={level}
                       className="flex-1 min-w-[40%] bg-card dark:bg-card-dark rounded-xl p-4 items-center"
                       style={{ borderWidth: 1, borderColor: color }}
-                      onPress={() => router.push(`/(tabs)/sightings?view=list&threat=${level}`)}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        router.push(`/(tabs)/sightings?view=list&threat=${level}`);
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`View ${stats[level]} ${level} threat sightings`}
                     >
                       <ThemedText weight="bold" size="3xl" style={{ color }}>
                         {stats[level]}
@@ -117,7 +115,11 @@ export default function HomeScreen() {
               >
                 Recent Sightings
               </ThemedText>
-              <Pressable onPress={() => router.push('/(tabs)/sightings?view=list')}>
+              <Pressable
+                onPress={() => router.push('/(tabs)/sightings?view=list')}
+                accessibilityRole="button"
+                accessibilityLabel="View all sightings"
+              >
                 <ThemedText variant="accent" size="sm">
                   View All →
                 </ThemedText>
@@ -139,7 +141,13 @@ export default function HomeScreen() {
           {/* Report Button */}
           <View className="px-6">
             <Pressable
-              onPress={() => router.push('/(modals)/report-sighting')}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                router.push('/(modals)/report-sighting');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Report new alien sighting"
+              accessibilityHint="Opens a form to document your encounter"
               className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary-dark rounded-xl"
             >
               <ThemedText weight="bold" size="sm" className="text-white dark:text-black">

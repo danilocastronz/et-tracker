@@ -4,6 +4,7 @@
     "strict": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "types": ["jest", "@testing-library/jest-native", "node"],
     "paths": {
       "@/*": ["src/*"]
@@ -23,11 +24,5 @@
     "expo-env.d.ts",
     "nativewind-env.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".expo",
-    "dist",
-    "build",
-    "coverage"
-  ]
+  "exclude": ["node_modules", ".expo", "dist", "build", "coverage"]
 }
