@@ -19,7 +19,7 @@ export default function DevScreen() {
     return <Redirect href="/(tabs)" />;
   }
 
-  const { sightings, resetToMockData, clearAllSightings } = useSightingsContext();
+  const { sightings, resetToMockData } = useSightingsContext();
   const { colors } = useAppTheme();
   const [lastReset, setLastReset] = useState<string | null>(null);
 
@@ -55,26 +55,6 @@ export default function DevScreen() {
     );
   }
 
-  async function handleClearAll() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    Alert.alert(
-      'Clear All Sightings',
-      'Delete all sightings permanently?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: async () => {
-            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-            await clearAllSightings();
-            Alert.alert('Cleared', 'All sightings removed.');
-          },
-        },
-      ]
-    );
-  }
-
   return (
     <ThemedView variant="background" className="flex-1">
       <SafeAreaView className="flex-1" edges={['top']}>
@@ -84,10 +64,7 @@ export default function DevScreen() {
           </ThemedText>
 
           {/* Stats Card */}
-          <View
-            className="rounded-xl p-4 mb-4"
-            style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
-          >
+          <View className="bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4 mb-4">
             <ThemedText weight="semibold" size="sm" className="mb-3">
               Storage Stats
             </ThemedText>
@@ -114,8 +91,7 @@ export default function DevScreen() {
           <View className="gap-3">
             <Pressable
               onPress={handleResetMockData}
-              className="rounded-lg p-4 flex-row items-center justify-between"
-              style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
+              className="bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-lg p-4 flex-row items-center justify-between"
             >
               <View className="flex-row items-center gap-3">
                 <MaterialIcons name="refresh" size={20} color={colors.primary} />
@@ -130,25 +106,6 @@ export default function DevScreen() {
               </View>
               <MaterialIcons name="chevron-right" size={24} color={colors.textMuted} />
             </Pressable>
-
-            <Pressable
-              onPress={handleClearAll}
-              className="rounded-lg p-4 flex-row items-center justify-between"
-              style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
-            >
-              <View className="flex-row items-center gap-3">
-                <MaterialIcons name="delete-sweep" size={20} color="#EF4444" />
-                <View>
-                  <ThemedText weight="semibold" size="sm" style={{ color: '#EF4444' }}>
-                    Clear All Sightings
-                  </ThemedText>
-                  <ThemedText variant="secondary" size="xs" className="mt-0.5">
-                    Delete all stored data
-                  </ThemedText>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={24} color={colors.textMuted} />
-            </Pressable>
           </View>
 
           {/* Info Section */}
@@ -156,10 +113,7 @@ export default function DevScreen() {
             <ThemedText weight="semibold" size="xs" variant="muted" className="uppercase tracking-widest">
               Info
             </ThemedText>
-            <View
-              className="rounded-xl p-4"
-              style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
-            >
+            <View className="bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4">
               <ThemedText variant="secondary" size="sm" className="mb-2">
                 This Dev Tools screen is only visible in development mode (__DEV__).
               </ThemedText>
