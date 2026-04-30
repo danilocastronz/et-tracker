@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+import { cn } from '@/lib/utils';
 import { useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
@@ -105,13 +106,15 @@ export default function SightingsScreen() {
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 py-3">
           <ThemedText weight="bold" size="xl">Sightings</ThemedText>
-          <View className="flex-row rounded-full p-1 gap-1" style={{ backgroundColor: colors.card }}>
+          <View className="flex-row bg-card dark:bg-card-dark rounded-full p-1 gap-1">
             {(['map', 'list'] as ViewMode[]).map((mode) => (
               <Pressable
                 key={mode}
                 onPress={() => setViewMode(mode)}
-                className="px-3 py-1.5 rounded-full"
-                style={{ backgroundColor: viewMode === mode ? `${colors.primary}22` : 'transparent' }}
+                className={cn(
+                  'px-3 py-1.5 rounded-full',
+                  viewMode === mode ? 'bg-primary/10 dark:bg-primary-dark/10' : ''
+                )}
               >
                 <MaterialIcons
                   name={mode === 'map' ? 'map' : 'view-list'}
@@ -142,19 +145,17 @@ export default function SightingsScreen() {
                     setSelectedSighting(null);
                   }
                 }}
-                style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 3,
-                  borderRadius: 99,
-                  backgroundColor: active ? `${color}22` : colors.card,
-                  borderWidth: 1,
-                  borderColor: active ? color : colors.border,
-                }}
+                className={cn(
+                  'rounded-full border',
+                  !active && 'bg-card dark:bg-card-dark border-border dark:border-border-dark'
+                )}
+                style={active ? { paddingHorizontal: 12, paddingVertical: 3, backgroundColor: `${color}22`, borderColor: color } : { paddingHorizontal: 12, paddingVertical: 3 }}
               >
                 <ThemedText
                   size="sm"
                   weight={active ? 'semibold' : 'normal'}
-                  style={{ color: active ? color : colors.textSecondary }}
+                  variant={active ? 'primary' : 'secondary'}
+                  style={active ? { color } : undefined}
                 >
                   {level === 'all' ? 'All threats' : getThreatLabel(level)}
                 </ThemedText>
@@ -184,19 +185,17 @@ export default function SightingsScreen() {
                       setSelectedSighting(null);
                     }
                   }}
-                  style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 3,
-                    borderRadius: 99,
-                    backgroundColor: active ? `${colors.primary}22` : colors.card,
-                    borderWidth: 1,
-                    borderColor: active ? colors.primary : colors.border,
-                  }}
+                  className={cn(
+                    'px-3 py-1 rounded-full border',
+                    active
+                      ? 'bg-primary/10 dark:bg-primary-dark/10 border-primary dark:border-primary-dark'
+                      : 'bg-card dark:bg-card-dark border-border dark:border-border-dark'
+                  )}
                 >
                   <ThemedText
                     size="sm"
                     weight={active ? 'semibold' : 'normal'}
-                    style={{ color: active ? colors.primary : colors.textSecondary }}
+                    variant={active ? 'accent' : 'secondary'}
                   >
                     {sp === 'all' ? 'All species' : capitalize(sp)}
                   </ThemedText>

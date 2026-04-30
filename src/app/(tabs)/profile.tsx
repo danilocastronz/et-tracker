@@ -159,7 +159,7 @@ export default function ProfileScreen() {
           </View>
 
           {/* Stats */}
-          <View className="mx-4 rounded-xl p-4 mb-6 flex-row justify-around" style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}>
+          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4 mb-6 flex-row justify-around">
             {[
               { label: 'Total', value: sightings.length },
               { label: 'Critical', value: sightings.filter((s) => s.threatLevel === 'critical').length },
@@ -181,7 +181,7 @@ export default function ProfileScreen() {
           >
             Appearance
           </ThemedText>
-          <View className="mx-4 rounded-xl p-2 mb-6 flex-row gap-2" style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}>
+          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-2 mb-6 flex-row gap-2">
             {(
               [
                 { key: 'light', label: 'Light', icon: 'light-mode' },
@@ -228,7 +228,7 @@ export default function ProfileScreen() {
           >
             About
           </ThemedText>
-          <View className="mx-4 rounded-xl p-4" style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}>
+          <View className="mx-4 bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-4">
             <ThemedText variant="secondary" size="sm" className="text-center">
               ET Tracker v{Constants.expoConfig?.version}{'\n'}Built with Expo SDK 54 & React Native
             </ThemedText>

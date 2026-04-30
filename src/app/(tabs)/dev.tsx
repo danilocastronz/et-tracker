@@ -9,7 +9,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSightingsContext } from '@/context/SightingsContext';
 import { SAMPLE_SIGHTINGS } from '@/data/sightings';
-import { useAppTheme } from '@/context/ThemeContext';
 import { SIGHTINGS_KEY } from '@/lib/storage';
 
 const DEV_RESET_KEY = 'dev_last_reset';
@@ -20,7 +19,6 @@ export default function DevScreen() {
   }
 
   const { sightings, resetToMockData } = useSightingsContext();
-  const { colors } = useAppTheme();
   const [lastReset, setLastReset] = useState<string | null>(null);
 
   useEffect(() => {
@@ -91,20 +89,12 @@ export default function DevScreen() {
           <View className="gap-3">
             <Pressable
               onPress={handleResetMockData}
-              className="bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-lg p-4 flex-row items-center justify-between"
+              className="bg-primary dark:bg-primary-dark rounded-xl p-4 flex-row items-center justify-center gap-3"
             >
-              <View className="flex-row items-center gap-3">
-                <MaterialIcons name="refresh" size={20} color={colors.primary} />
-                <View>
-                  <ThemedText weight="semibold" size="sm">
-                    Reset to Mock Data
-                  </ThemedText>
-                  <ThemedText variant="secondary" size="xs" className="mt-0.5">
-                    Load {SAMPLE_SIGHTINGS.length} sample sightings
-                  </ThemedText>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={24} color={colors.textMuted} />
+              <MaterialIcons name="refresh" size={20} color="#0A0A1A" />
+              <ThemedText weight="bold" size="sm" style={{ color: '#0A0A1A' }}>
+                Reset to Mock Data
+              </ThemedText>
             </Pressable>
           </View>
 

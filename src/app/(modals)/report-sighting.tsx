@@ -174,8 +174,8 @@ export default function ReportSightingScreen() {
           </View>
 
           {(!latitude || !longitude) && (
-            <View className="border rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: `${colors.warning}11`, borderColor: `${colors.warning}33` }}>
-              <ThemedText size="sm" style={{ color: colors.warning }}>
+            <View className="bg-warning/[7%] border border-warning/30 rounded-xl px-4 py-3 mb-4">
+              <ThemedText size="sm" className="text-warning">
                 ⚠️ Acquiring your location… Submission requires GPS coordinates.
               </ThemedText>
             </View>
