@@ -6,10 +6,10 @@ module.exports = function (api) {
     presets: [
       isJest
         ? ['@babel/preset-env', { targets: { node: 'current' } }]
-        : ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
-      isJest && '@babel/preset-react',
+        : 'babel-preset-expo',
+      ['@babel/preset-react', { runtime: 'automatic' }],
       '@babel/preset-typescript',
-    ].filter(Boolean),
+    ],
     plugins: [
       !isJest && 'react-native-reanimated/plugin',
       isJest && '@babel/plugin-transform-flow-strip-types',
