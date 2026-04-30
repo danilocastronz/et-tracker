@@ -54,11 +54,26 @@ export default function ReportSightingScreen() {
     []
   );
 
+  const FALLBACK_LOCATIONS = [
+    { latitude: 40.7128, longitude: -74.006 },   // New York
+    { latitude: 34.0522, longitude: -118.2437 },  // Los Angeles
+    { latitude: 41.8781, longitude: -87.6298 },   // Chicago
+    { latitude: 29.7604, longitude: -95.3698 },   // Houston
+    { latitude: 33.449, longitude: -112.0741 },   // Phoenix
+    { latitude: 39.9526, longitude: -75.1652 },   // Philadelphia
+    { latitude: 29.4241, longitude: -98.4936 },   // San Antonio
+    { latitude: 32.7767, longitude: -96.797 },    // Dallas
+  ];
+
+  function getFallbackLocation() {
+    return FALLBACK_LOCATIONS[Math.floor(Math.random() * FALLBACK_LOCATIONS.length)];
+  }
+
   function validate(): string | null {
     if (!form.title.trim()) return 'A title is required.';
     if (!form.description.trim()) return 'Please describe what you witnessed.';
-    if (!latitude || !longitude) return 'Unable to determine your location. Please try again.';
-    if (!validateCoordinates(latitude, longitude)) return 'Invalid location coordinates.';
+    if (latitude && longitude && !validateCoordinates(latitude, longitude))
+      return 'Invalid location coordinates.';
     return null;
   }
 
@@ -71,11 +86,13 @@ export default function ReportSightingScreen() {
 
     setSubmitting(true);
     try {
+      const location = (latitude && longitude) ? { latitude, longitude } : getFallbackLocation();
+
       const sighting = await addSighting({
         title: sanitizeText(form.title, 80),
         description: sanitizeText(form.description, 1000),
-        latitude: latitude!,
-        longitude: longitude!,
+        latitude: location.latitude,
+        longitude: location.longitude,
         photoUri: form.photoUri ?? undefined,
         threatLevel: form.threatLevel,
         species: form.species ? sanitizeText(form.species, 50) : undefined,
@@ -192,7 +209,7 @@ export default function ReportSightingScreen() {
           {(!latitude || !longitude) && (
             <View className="bg-warning/[7%] border border-warning/30 rounded-xl px-4 py-3 mb-4">
               <ThemedText size="sm" className="text-warning">
-                ⚠️ Acquiring your location… Submission requires GPS coordinates.
+                ⚠️ GPS unavailable — a random US location will be used for this report.
               </ThemedText>
             </View>
           )}

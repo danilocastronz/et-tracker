@@ -148,7 +148,7 @@ export default function HomeScreen() {
               accessibilityRole="button"
               accessibilityLabel="Report new alien sighting"
               accessibilityHint="Opens a form to document your encounter"
-              className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary-dark rounded-xl"
+              className="flex-row items-center justify-center gap-3 p-4 bg-primary dark:bg-primary rounded-xl"
             >
               <ThemedText weight="bold" size="sm" className="text-white dark:text-black">
                 Report New Sighting
