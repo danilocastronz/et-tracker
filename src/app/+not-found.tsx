@@ -1,8 +1,8 @@
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
-import { useAppTheme } from '@/context/ThemeContext';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useAppTheme } from '@/context/theme-context';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 
 export default function NotFoundScreen() {
   const { colors } = useAppTheme();

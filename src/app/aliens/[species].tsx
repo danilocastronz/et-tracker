@@ -2,13 +2,13 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { SightingCard } from '@/components/SightingCard';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { SightingCard } from '@/components/sighting-card';
 import { SAMPLE_ALIENS } from '@/data/aliens';
-import { useSightingsContext } from '@/context/SightingsContext';
-import { useAppTheme } from '@/context/ThemeContext';
-import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
+import { useSightingsContext } from '@/context/sightings-context';
+import { useAppTheme } from '@/context/theme-context';
+import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threat-level';
 import { capitalize } from '@/utils/capitalize';
 
 const categoryEmoji: Record<string, string> = {

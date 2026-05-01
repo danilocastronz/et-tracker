@@ -21,9 +21,9 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import '@/global.css';
 
-import { ThemeProvider, useAppTheme } from '@/context/ThemeContext';
-import { SightingsProvider } from '@/context/SightingsContext';
-import { useNotifications } from '@/hooks/useNotifications';
+import { ThemeProvider, useAppTheme } from '@/context/theme-context';
+import { SightingsProvider } from '@/context/sightings-context';
+import { useNotifications } from '@/hooks/use-notifications';
 
 // Initialize Sentry for error tracking
 const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
-import { ThemeProvider } from '@/context/ThemeContext';
-import { AlienCard } from '@/components/AlienCard';
+import { ThemeProvider } from '@/context/theme-context';
+import { AlienCard } from '@/components/alien-card';
 import { AlienSpecies } from '@/types';
 import React from 'react';
 

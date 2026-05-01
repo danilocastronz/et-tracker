@@ -1,6 +1,6 @@
-import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
+import { getThreatColor, getThreatLabel } from '@/utils/threat-level';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
 import { capitalize } from '@/utils/capitalize';
 import { Pressable, View } from 'react-native';
 import { AlienSpecies } from '@/types';

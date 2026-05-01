@@ -38,11 +38,13 @@ The app is designed to be **followed by The Expo Files ebook**, which provides d
 ### Installation
 
 1. **Clone and install**
+
    ```bash
    npm install
    ```
 
 2. **Start development server**
+
    ```bash
    npm start
    ```
@@ -56,35 +58,42 @@ The app is designed to be **followed by The Expo Files ebook**, which provides d
 ## Technologies Used
 
 ### Core Framework
+
 - **[Expo SDK 54](https://docs.expo.dev/)** — Build, deploy, and scale universal React Native apps
 - **[React Native](https://reactnative.dev/)** — Cross-platform native UI development
 - **[React 19](https://react.dev/)** — Modern UI with hooks and composition
 
 ### Navigation & Routing
+
 - **[Expo Router](https://docs.expo.dev/router/introduction/)** — File-based routing (like Next.js but for native)
 - **[React Navigation](https://reactnavigation.org/)** — Stack, tab, and drawer navigation primitives
 
 ### Styling & UI
+
 - **[NativeWind](https://www.nativewind.dev/)** — Tailwind CSS for React Native with dark mode support
 - **[Tailwind CSS v3](https://tailwindcss.com/)** — Utility-first CSS framework
 - **[@expo-google-fonts/inter](https://docs.expo.dev/guides/using-custom-fonts/)** — Professional Inter typeface
 
 ### Data & Storage
+
 - **[@react-native-async-storage/async-storage](https://react-native-async-storage.github.io/async-storage/)** — Local key-value storage (replaces SQLite for simplicity)
 - **[expo-secure-store](https://docs.expo.dev/sdk/securestore/)** — Encrypted credential storage
 
 ### Location & Maps
+
 - **[expo-location](https://docs.expo.dev/sdk/location/)** — GPS and location services
 - **[react-native-maps](https://github.com/react-native-maps/react-native-maps)** — Native map views
 - **[expo-task-manager](https://docs.expo.dev/sdk/task-manager/)** — Background location tracking
 
 ### Interactions & Feedback
+
 - **[expo-haptics](https://docs.expo.dev/sdk/haptics/)** — Vibration and haptic feedback (impact, notification patterns)
 - **[expo-image-picker](https://docs.expo.dev/sdk/image-picker/)** — Camera and photo library access
 - **[react-native-reanimated](https://docs.reanimated2.com/)** — Smooth 60fps animations
 - **[@shopify/flash-list](https://shopify.github.io/flash-list/)** — High-performance virtualized lists
 
 ### Infrastructure
+
 - **[expo-notifications](https://docs.expo.dev/sdk/notifications/)** — Local and push notifications
 - **[expo-file-system](https://docs.expo.dev/sdk/filesystem/)** — File and directory management
 
@@ -100,7 +109,9 @@ The app is designed to be **followed by The Expo Files ebook**, which provides d
 ## Key Concepts Explained
 
 ### File-Based Routing with Expo Router
+
 The app uses Expo Router for navigation, which mirrors Next.js patterns in React Native:
+
 - `app/(tabs)/_layout.tsx` — Tab navigation container
 - `app/(tabs)/index.tsx` — Home/HQ screen (tab route)
 - `app/(modals)/report-sighting.tsx` — Modal over tabs
@@ -109,7 +120,9 @@ The app uses Expo Router for navigation, which mirrors Next.js patterns in React
 **Learn more:** [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
 
 ### Dark Mode with NativeWind
+
 The app supports light/dark/system themes using:
+
 - **Appearance API**: `Appearance.setColorScheme()` to override system preference
 - **Dark Mode Prefix**: NativeWind `dark:` utilities automatically respond to system/user theme
 - **Tailwind Config**: Dual color tokens (`bg-background dark:bg-background-dark`)
@@ -118,7 +131,9 @@ The app supports light/dark/system themes using:
 **Learn more:** [NativeWind v4 Dark Mode](https://www.nativewind.dev/dark-mode)
 
 ### Local Data Persistence
+
 Instead of a complex database, the app uses AsyncStorage:
+
 - Simple JSON serialization for sightings array
 - Key: `sightings_v1`
 - All operations are async (safe for React 18)
@@ -130,7 +145,9 @@ Instead of a complex database, the app uses AsyncStorage:
 **Learn more:** [AsyncStorage Best Practices](https://react-native-async-storage.github.io/async-storage/docs/usage/)
 
 ### Haptic Feedback
+
 Haptic feedback provides tactile confirmation for user interactions:
+
 - **Medium Impact**: Theme selection buttons
 - **Heavy Impact**: Dev screen action buttons (before confirmation dialog)
 - **Success Notification**: After confirming data reset
@@ -138,6 +155,7 @@ Haptic feedback provides tactile confirmation for user interactions:
 - **Light Impact**: Tab bar navigation
 
 Examples in codebase:
+
 - `app/(tabs)/profile.tsx` — Theme selector haptics
 - `app/(tabs)/dev.tsx` — Action confirmation haptics
 - `components/haptic-tab.tsx` — Tab navigation haptics
@@ -145,7 +163,9 @@ Examples in codebase:
 **Learn more:** [Expo Haptics API](https://docs.expo.dev/sdk/haptics/)
 
 ### Responsive Design with Tailwind
+
 All UI uses Tailwind CSS classes:
+
 - Mobile-first responsive design
 - Platform-specific utilities (iOS/Android differences)
 - Safe area insets with `SafeAreaView`
@@ -203,7 +223,6 @@ All UI uses Tailwind CSS classes:
 ├── types/                        # TypeScript type definitions
 │   └── index.ts                  # App-wide types (Sighting, ColorScheme, etc.)
 ├── tailwind.config.js            # Tailwind CSS configuration
-├── nativewind.config.ts          # NativeWind configuration
 ├── app.json                      # Expo app config
 └── package.json                  # Dependencies
 ```
@@ -244,6 +263,7 @@ npm run test:coverage   # Generate coverage report
 ### Theme Development
 
 To test theme switching:
+
 1. Open the Profile tab
 2. Tap "Light", "System", or "Dark" buttons
 3. Watch NativeWind `dark:` prefix styles update instantly
@@ -252,6 +272,7 @@ To test theme switching:
 ### Data Development
 
 To reset app data during development:
+
 1. Open the Dev tab (only visible in `__DEV__` mode)
 2. Tap "Reset to Mock Data" to load 20 sample sightings
 3. Tap "Clear All Sightings" to start with an empty database
@@ -261,14 +282,15 @@ To reset app data during development:
 Create a `.env` file in the project root (copy from `.env.example`):
 
 ```bash
-# App Environment
-EXPO_PUBLIC_APP_ENV=development
+# Google Maps API Key (required for Android maps)
+GOOGLE_MAPS_API_KEY=your_api_key_here
 
-# Sentry Error Reporting (optional)
-# EXPO_PUBLIC_SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+# Sentry DSN for error tracking (EXPO_PUBLIC_ prefix required for runtime access)
+EXPO_PUBLIC_SENTRY_DSN=your_sentry_dsn_here
 
-# API Configuration (if using external APIs)
-# EXPO_PUBLIC_API_URL=https://api.example.com
+# Sentry organization and project (for source maps)
+SENTRY_ORG=your_sentry_org
+SENTRY_PROJECT=your_sentry_project
 ```
 
 **Note:** Only variables prefixed with `EXPO_PUBLIC_` are accessible at runtime. Never commit `.env` files with secrets.
@@ -292,19 +314,19 @@ npm run test:coverage
 
 **Example Tests:** See `__tests__/components/`, `__tests__/hooks/`, and `__tests__/context/` for testing patterns.
 
-**Learn More:** See [TESTING.md](./TESTING.md) for comprehensive testing documentation.
-
 ## Community & Support
 
 Have questions about how ET Tracker works? Want to discuss Expo patterns?
 
 ### Ask Questions
+
 - 📖 **[The Expo Files Ebook](https://www.example.com/)** — Comprehensive educational companion to this project
 - 💬 **[GitHub Discussions](https://github.com/yourusername/et-tracker/discussions)** — Ask questions, share feedback, and discuss patterns
 - 🐛 **[GitHub Issues](https://github.com/yourusername/et-tracker/issues)** — Report bugs or request features
 - 💬 **[Expo Discord Community](https://chat.expo.dev)** — Chat with Expo developers and get help
 
 ### Resources
+
 - [Expo Documentation](https://docs.expo.dev/)
 - [React Native Community](https://reactnative.dev/community/overview)
 - [NativeWind Documentation](https://www.nativewind.dev/)

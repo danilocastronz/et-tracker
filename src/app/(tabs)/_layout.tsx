@@ -3,8 +3,8 @@
 import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { HapticTab } from '@/components/HapticTab';
-import { useAppTheme } from '@/context/ThemeContext';
+import { HapticTab } from '@/components/haptic-tab';
+import { useAppTheme } from '@/context/theme-context';
 
 export default function TabLayout() {
   const { colors } = useAppTheme();

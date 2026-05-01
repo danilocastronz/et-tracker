@@ -1,1 +1,0 @@
-export { SightingMarker } from './SightingMarker';

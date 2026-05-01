@@ -1,1 +1,0 @@
-export { SightingListItem } from './SightingListItem';

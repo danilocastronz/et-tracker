@@ -1,6 +1,6 @@
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { Linking, Pressable } from 'react-native';
 
 interface LocationPermissionRequestProps {

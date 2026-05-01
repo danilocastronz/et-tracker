@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { ThemeProvider } from '@/context/theme-context';
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(

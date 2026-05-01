@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemedText } from '@/components/themed-text';
+import { ThemeProvider } from '@/context/theme-context';
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(

@@ -1,7 +1,7 @@
-import { getThreatColor, getThreatLabel } from '@/utils/threatLevel';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { formatDate } from '@/utils/formatDate';
+import { getThreatColor, getThreatLabel } from '@/utils/threat-level';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { formatDate } from '@/utils/format-date';
 import { capitalize } from '@/utils/capitalize';
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';

@@ -1,4 +1,4 @@
-import { getThreatColor, getThreatLabel, getThreatEmoji } from '@/utils/threatLevel';
+import { getThreatColor, getThreatLabel, getThreatEmoji } from '@/utils/threat-level';
 import { ThreatLevel } from '@/types';
 
 describe('Threat Level Utilities', () => {

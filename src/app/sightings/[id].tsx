@@ -1,12 +1,12 @@
-import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
+import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threat-level';
 import { Alert, Pressable, ScrollView, View, Share } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useSightingsContext } from '@/context/SightingsContext';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { useSightingsContext } from '@/context/sightings-context';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/utils/format-date';
 import { capitalize } from '@/utils/capitalize';
 import * as Sharing from 'expo-sharing';
 import { Image } from 'expo-image';

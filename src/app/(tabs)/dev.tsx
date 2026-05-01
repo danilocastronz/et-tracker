@@ -5,10 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { MaterialIcons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { useSightingsContext } from '@/context/SightingsContext';
-import { useAppTheme } from '@/context/ThemeContext';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useSightingsContext } from '@/context/sightings-context';
+import { useAppTheme } from '@/context/theme-context';
 import { SAMPLE_SIGHTINGS } from '@/data/sightings';
 import { SIGHTINGS_KEY } from '@/lib/storage';
 

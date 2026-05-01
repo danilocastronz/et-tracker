@@ -1,6 +1,6 @@
-import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threat-level';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { Pressable, View } from 'react-native';
 import { ThreatLevel } from '@/types';
 

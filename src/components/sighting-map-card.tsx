@@ -1,8 +1,8 @@
-import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threatLevel';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { getThreatColor, getThreatEmoji, getThreatLabel } from '@/utils/threat-level';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/utils/format-date';
 import { capitalize } from '@/utils/capitalize';
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';

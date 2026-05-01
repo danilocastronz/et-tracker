@@ -1,1 +1,0 @@
-export { SightingCardSkeleton } from './SightingCardSkeleton';

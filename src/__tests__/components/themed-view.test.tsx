@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemedView } from '@/components/themed-view';
+import { ThemeProvider } from '@/context/theme-context';
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(

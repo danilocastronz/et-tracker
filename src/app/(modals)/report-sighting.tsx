@@ -7,16 +7,16 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { ThreatLevelSelector } from '@/components/ThreatLevelSelector';
+import { ThreatLevelSelector } from '@/components/threat-level-selector';
 import { sanitizeText, validateCoordinates } from '@/utils/sanitize';
-import { useSightingsContext } from '@/context/SightingsContext';
-import { SpeciesSelector } from '@/components/SpeciesSelector';
-import { useUserLocation } from '@/hooks/useUserLocation';
-import { PhotoSection } from '@/components/PhotoSection';
+import { useSightingsContext } from '@/context/sightings-context';
+import { SpeciesSelector } from '@/components/species-selector';
+import { useUserLocation } from '@/hooks/use-user-location';
+import { PhotoSection } from '@/components/photo-section';
 import { sendSightingAlert } from '@/lib/notifications';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useCallback, useState } from 'react';
 import { router, Stack } from 'expo-router';

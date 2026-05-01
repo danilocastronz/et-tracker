@@ -1,12 +1,12 @@
 import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
-import { ProfileStatsSkeleton } from '@/components/ProfileStatsSkeleton';
-import { useSightingsContext } from '@/context/SightingsContext';
+import { ProfileStatsSkeleton } from '@/components/profile-stats-skeleton';
+import { useSightingsContext } from '@/context/sightings-context';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Directory, File, Paths } from 'expo-file-system';
-import { usePreferences } from '@/hooks/usePreferences';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { usePreferences } from '@/hooks/use-preferences';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { LOADING_DELAY } from '@/constants/loading';
 import { useEffect, useRef, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';

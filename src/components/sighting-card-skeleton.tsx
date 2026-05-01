@@ -4,7 +4,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedView } from '@/components/themed-view';
 import { View } from 'react-native';
 import { useEffect } from 'react';
 

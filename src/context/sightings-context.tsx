@@ -2,7 +2,7 @@
 // Seeds the app with sample data on first launch for demo/testing purposes
 import { createContext, useCallback, useContext, useEffect } from 'react';
 import { clearSightings, resetSightings } from '@/lib/storage';
-import { useSightingsDB } from '@/hooks/useSightingsDB';
+import { useSightingsDB } from '@/hooks/use-sightings-db';
 import { SAMPLE_SIGHTINGS } from '@/data/sightings';
 import { Sighting, ThreatLevel } from '@/types';
 

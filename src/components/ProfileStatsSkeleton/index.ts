@@ -1,1 +1,0 @@
-export { ProfileStatsSkeleton } from './ProfileStatsSkeleton';

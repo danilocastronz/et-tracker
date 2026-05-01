@@ -1,1 +1,0 @@
-export { SightingMapCard } from './SightingMapCard';

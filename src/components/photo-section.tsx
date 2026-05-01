@@ -1,7 +1,7 @@
 import { ActionSheetIOS, Alert, Platform, Pressable } from 'react-native';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
-import { ThemedText } from '@/components/ThemedText';
-import { persistImage } from '@/utils/persistImage';
+import { ThemedText } from '@/components/themed-text';
+import { persistImage } from '@/utils/persist-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 

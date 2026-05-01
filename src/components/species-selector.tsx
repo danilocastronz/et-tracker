@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, View } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { useAppTheme } from '@/context/ThemeContext';
+import { ThemedText } from '@/components/themed-text';
+import { useAppTheme } from '@/context/theme-context';
 import { SAMPLE_ALIENS } from '@/data/aliens';
 
 const SPECIES_OPTIONS = [

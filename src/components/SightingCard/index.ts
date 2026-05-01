@@ -1,1 +1,0 @@
-export { SightingCard } from './SightingCard';

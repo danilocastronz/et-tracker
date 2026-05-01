@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
-import { SightingCard } from '@/components/SightingCard';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { SightingCard } from '@/components/sighting-card';
+import { ThemeProvider } from '@/context/theme-context';
 import { Sighting } from '@/types';
 
 const mockSighting: Sighting = {
